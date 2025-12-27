@@ -9,6 +9,8 @@
 
 **A production-ready distributed blockchain system for multi-organization asset approval workflows.**
 
+📚 **[View Full Documentation](https://deepwiki.com/akash-R-A-J/asset-approval-system)**
+
 </div>
 
 ---
