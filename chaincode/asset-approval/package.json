@@ -1,0 +1,19 @@
+{
+  "name": "asset-approval-chaincode",
+  "version": "1.0.0",
+  "description": "Asset Approval Chaincode for Hyperledger Fabric - Manages asset lifecycle with access control",
+  "main": "index.js",
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "start": "fabric-chaincode-node start",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "author": "Asset Approval Consortium",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "fabric-contract-api": "^2.5.0",
+    "fabric-shim": "^2.5.0"
+  }
+}

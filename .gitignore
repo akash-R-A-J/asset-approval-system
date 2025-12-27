@@ -1,0 +1,95 @@
+# ============================================================================
+# Hyperledger Fabric Project - .gitignore
+# ============================================================================
+
+# ============================================================================
+# Node.js
+# ============================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn
+
+# ============================================================================
+# Generated Network Artifacts (Crypto Material)
+# ============================================================================
+# These are generated when running the network - never commit!
+network/organizations/peerOrganizations/
+network/organizations/ordererOrganizations/
+network/channel-artifacts/
+
+# Fabric CA generated files
+network/organizations/fabric-ca/*/msp/
+network/organizations/fabric-ca/*/tls-cert.pem
+network/organizations/fabric-ca/*/ca-cert.pem
+network/organizations/fabric-ca/*/IssuerPublicKey
+network/organizations/fabric-ca/*/IssuerRevocationPublicKey
+network/organizations/fabric-ca/*/fabric-ca-server.db
+
+# Chaincode package
+network/*.tar.gz
+*.tar.gz
+
+# ============================================================================
+# Client Application
+# ============================================================================
+# Wallet contains private keys - never commit!
+client/wallet/
+
+# ============================================================================
+# IDE and Editor
+# ============================================================================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-*
+
+# ============================================================================
+# Operating System
+# ============================================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================================================================
+# Logs
+# ============================================================================
+*.log
+logs/
+
+# ============================================================================
+# Environment Files
+# ============================================================================
+.env
+.env.local
+.env.*.local
+*.env
+
+# ============================================================================
+# Docker (local overrides)
+# ============================================================================
+docker-compose.override.yml
+docker-compose.local.yml
+
+# ============================================================================
+# Build Outputs
+# ============================================================================
+dist/
+build/
+coverage/
+.nyc_output/
+
+# ============================================================================
+# Temporary Files
+# ============================================================================
+tmp/
+temp/
+*.tmp
+*.temp
