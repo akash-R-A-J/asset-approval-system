@@ -176,11 +176,17 @@ fabric-ca-client version
 # Navigate to your projects directory
 cd ~ && mkdir -p projects && cd projects
 
-# Clone the repository (replace with your actual repo URL)
-git clone https://github.com/akash-R-A-J/hyperledger-asset-approval.git hyperledger
+# Clone the repository
+git clone https://github.com/akash-R-A-J/asset-approval-system.git
 
 # Enter project directory
-cd hyperledger
+cd asset-approval-system
+
+# IMPORTANT: Fix line endings if cloned/copied from Windows
+# (Skip this if you cloned directly in Linux)
+sudo apt install -y dos2unix
+find . -name "*.sh" -exec dos2unix {} \;
+find . -name "*.yaml" -exec dos2unix {} \;
 
 # Make all scripts executable
 chmod +x scripts/*.sh network/scripts/*.sh
@@ -240,8 +246,9 @@ jq --version              # Any version
 
 > **Note for Windows Users:** If you previously downloaded the project on Windows, copy it to WSL first:
 > ```bash
-> cp -r /mnt/c/Users/<USERNAME>/Desktop/hyperledger ~/projects/
-> cd ~/projects/hyperledger
+> cp -r /mnt/c/Users/<USERNAME>/Desktop/asset-approval-system ~/projects/
+> cd ~/projects/asset-approval-system
+> sudo apt install -y dos2unix
 > find . -name "*.sh" -exec dos2unix {} \;  # Fix line endings
 > find . -name "*.yaml" -exec dos2unix {} \;
 > chmod +x scripts/*.sh network/scripts/*.sh
@@ -269,7 +276,7 @@ jq --version              # Any version
 ## 📁 Project Structure
 
 ```
-hyperledger/
+asset-approval-system/
 ├── scripts/                           # Operational scripts
 │   ├── start-all.sh                  # Complete network startup
 │   ├── stop-all.sh                   # Clean shutdown
@@ -464,6 +471,7 @@ The CLI automatically validates:
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
+| `/bin/bash^M: bad interpreter` | Windows line endings (CRLF) | Run `dos2unix scripts/*.sh network/scripts/*.sh` |
 | `fabric-ca-client: not found` | Binaries not in PATH | Install and add `~/bin` to PATH |
 | `GLIBC_2.32 not found` | Ubuntu too old | Use Ubuntu 22.04+ in WSL |
 | `No Raft leader` | Orderers not joined | All 3 must join via osnadmin |

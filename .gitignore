@@ -93,3 +93,51 @@ tmp/
 temp/
 *.tmp
 *.temp
+
+# ============================================================================
+# Chaincode Dependencies (explicit)
+# ============================================================================
+chaincode/**/node_modules/
+
+# ============================================================================
+# Additional Fabric CA Runtime Files
+# ============================================================================
+# These files are generated when CAs start and should never be committed
+network/organizations/fabric-ca/**/msp/
+network/organizations/fabric-ca/**/ca-cert.pem
+network/organizations/fabric-ca/**/tls-cert.pem
+network/organizations/fabric-ca/**/IssuerPublicKey
+network/organizations/fabric-ca/**/IssuerRevocationPublicKey
+network/organizations/fabric-ca/**/fabric-ca-server.db
+
+# ============================================================================
+# Private Key Directories (Security Critical)
+# ============================================================================
+**/keystore/
+**/signcerts/
+**/tlscacerts/
+**/cacerts/
+**/admincerts/
+
+# ============================================================================
+# CouchDB Data
+# ============================================================================
+couchdb-data/
+*.couch
+
+# ============================================================================
+# Runtime and Debug Files
+# ============================================================================
+*.pid
+*.seed
+pids/
+.grunt
+.lock-wscript
+.node_repl_history
+.eslintcache
+
+# ============================================================================
+# Test Coverage
+# ============================================================================
+.nyc_output/
+*.lcov
