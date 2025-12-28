@@ -27,6 +27,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 CLIENT_DIR="$PROJECT_ROOT/client"
 
+# Suppress config warnings for clean test output
+export SUPPRESS_CONFIG_WARNINGS=true
+
 cd "$CLIENT_DIR" || {
     echo -e "${RED}ERROR: Cannot access client directory: $CLIENT_DIR${NC}"
     exit 1

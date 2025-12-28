@@ -17,6 +17,9 @@
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const IS_PRODUCTION = NODE_ENV === 'production';
 
+// Track which env vars are using defaults (to show a single warning)
+const usingDefaults = [];
+
 /**
  * Validate that a required environment variable is set
  * @param {string} name - Environment variable name
@@ -30,7 +33,8 @@ function getEnvOrDefault(name, defaultValue) {
         if (IS_PRODUCTION) {
             throw new Error(`Environment variable ${name} is required in production`);
         }
-        console.warn(`[WARN] Using default value for ${name}. Set env var in production.`);
+        // Track defaults used (will show warning once at end)
+        usingDefaults.push(name);
         return defaultValue;
     }
 
@@ -169,6 +173,11 @@ function validateReason(reason) {
     }
 }
 
+// Show a single consolidated warning if using defaults (suppress with env var for clean demos)
+if (usingDefaults.length > 0 && process.env.SUPPRESS_CONFIG_WARNINGS !== 'true') {
+    console.warn(`[INFO] Development mode: using default credentials. Set env vars in production.`);
+}
+
 module.exports = {
     config,
     getOrgConfig,
@@ -176,5 +185,6 @@ module.exports = {
     validateDescription,
     validateReason,
     IS_PRODUCTION,
-    NODE_ENV
+    NODE_ENV,
+    usingDefaults
 };
