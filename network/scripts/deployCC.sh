@@ -210,7 +210,7 @@ function queryCommitted() {
     peer lifecycle chaincode querycommitted --channelID $CHANNEL_NAME --name ${CC_NAME}
     res=$?
     { set +x; } 2>/dev/null
-    let rc=$res
+    rc=$res
     COUNTER=$(expr $COUNTER + 1)
   done
   verifyResult $res "Query committed failed" || exit 1
