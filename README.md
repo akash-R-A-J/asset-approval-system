@@ -1,4 +1,4 @@
-# Asset Approval System - Hyperledger Fabric
+<h1 align="center"> Asset Approval System - Hyperledger Fabric </h1>
 
 <div align="center">
 
