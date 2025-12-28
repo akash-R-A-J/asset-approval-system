@@ -28,7 +28,9 @@ function packageChaincode() {
   peer lifecycle chaincode package ${CC_NAME}.tar.gz --path ${CC_SRC_PATH} --lang node --label ${CC_NAME}_${CC_VERSION}
   res=$?
   { set +x; } 2>/dev/null
-  verifyResult $res "Chaincode packaging failed" || exit 1
+  if ! verifyResult $res "Chaincode packaging failed"; then
+    return 1
+  fi
   successln "Chaincode packaged successfully"
 }
 
@@ -52,7 +54,9 @@ function installChaincode() {
   peer lifecycle chaincode install ${CC_NAME}.tar.gz
   res=$?
   { set +x; } 2>/dev/null
-  verifyResult $res "Chaincode installation on peer0.org${ORG} failed" || exit 1
+  if ! verifyResult $res "Chaincode installation on peer0.org${ORG} failed"; then
+    return 1
+  fi
   successln "Chaincode installed on peer0.org${ORG}"
 }
 
@@ -125,7 +129,9 @@ function approveForMyOrg() {
     --collections-config ${CC_COLL_CONFIG}
   res=$?
   { set +x; } 2>/dev/null
-  verifyResult $res "Chaincode definition approval failed for org${ORG}" || exit 1
+  if ! verifyResult $res "Chaincode definition approval failed for org${ORG}"; then
+    return 1
+  fi
   successln "Chaincode definition approved for org${ORG}"
 }
 
@@ -190,7 +196,9 @@ function commitChaincodeDefinition() {
     "${PEER_CONN_PARMS[@]}"
   res=$?
   { set +x; } 2>/dev/null
-  verifyResult $res "Chaincode definition commit failed" || exit 1
+  if ! verifyResult $res "Chaincode definition commit failed"; then
+    return 1
+  fi
   successln "Chaincode definition committed"
 }
 
@@ -213,7 +221,9 @@ function queryCommitted() {
     rc=$res
     COUNTER=$(expr $COUNTER + 1)
   done
-  verifyResult $res "Query committed failed" || exit 1
+  if ! verifyResult $res "Query committed failed"; then
+    return 1
+  fi
 }
 
 # Main function
