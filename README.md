@@ -7,7 +7,7 @@
 ![License](https://img.shields.io/badge/License-Apache%202.0-yellow)
 ![Docker](https://img.shields.io/badge/Docker-Required-blue)
 
-**A production-ready distributed blockchain system for multi-organization asset approval workflows.**
+**A POC demonstrating a distributed blockchain system for multi-organization asset approval workflows.**
 
 📚 **[View Full Documentation](https://deepwiki.com/akash-R-A-J/asset-approval-system)**
 
