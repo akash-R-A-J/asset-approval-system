@@ -480,12 +480,6 @@ The CLI automatically validates:
 
 ---
 
-## 📝 License
-
-Apache-2.0
-
----
-
 <div align="center">
 
 **Built with Hyperledger Fabric v2.5 | Node.js Chaincode | Raft Consensus | Fabric CA**
