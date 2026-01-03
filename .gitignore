@@ -1,5 +1,6 @@
 # ============================================================================
-# Hyperledger Fabric Project - .gitignore
+# Asset Approval System - Hyperledger Fabric
+# Comprehensive .gitignore for v0 and v1 versions
 # ============================================================================
 
 # ============================================================================
@@ -11,25 +12,33 @@ yarn-debug.log*
 yarn-error.log*
 .npm
 .yarn
+package-lock.json
+
+# ============================================================================
+# TypeScript Build Artifacts (v1)
+# ============================================================================
+dist/
+*.tsbuildinfo
 
 # ============================================================================
 # Generated Network Artifacts (Crypto Material)
 # ============================================================================
 # These are generated when running the network - never commit!
-network/organizations/peerOrganizations/
-network/organizations/ordererOrganizations/
-network/channel-artifacts/
+**/network/organizations/peerOrganizations/
+**/network/organizations/ordererOrganizations/
+**/network/channel-artifacts/
+**/network/crypto-config/
 
 # Fabric CA generated files
-network/organizations/fabric-ca/*/msp/
-network/organizations/fabric-ca/*/tls-cert.pem
-network/organizations/fabric-ca/*/ca-cert.pem
-network/organizations/fabric-ca/*/IssuerPublicKey
-network/organizations/fabric-ca/*/IssuerRevocationPublicKey
-network/organizations/fabric-ca/*/fabric-ca-server.db
+**/network/organizations/fabric-ca/*/msp/
+**/network/organizations/fabric-ca/*/tls-cert.pem
+**/network/organizations/fabric-ca/*/ca-cert.pem
+**/network/organizations/fabric-ca/*/IssuerPublicKey
+**/network/organizations/fabric-ca/*/IssuerRevocationPublicKey
+**/network/organizations/fabric-ca/*/fabric-ca-server.db
 
-# Chaincode package
-network/*.tar.gz
+# Chaincode packages
+**/network/*.tar.gz
 *.tar.gz
 
 # ============================================================================
