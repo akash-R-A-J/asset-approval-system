@@ -1,0 +1,32 @@
+# Minimal core.yaml for peer CLI operations
+# This is used when running peer commands from the host machine
+
+peer:
+  id: peer0.org1.example.com
+  networkId: asset-network
+  listenAddress: 0.0.0.0:7051
+  address: 0.0.0.0:7051
+  addressAutoDetect: false
+  
+  gossip:
+    bootstrap: peer0.org1.example.com:7051
+    useLeaderElection: false
+    orgLeader: true
+    endpoint: 
+    
+  tls:
+    enabled: true
+    clientAuthRequired: false
+    
+  BCCSP:
+    Default: SW
+    SW:
+      Hash: SHA2
+      Security: 256
+
+logging:
+  level: info
+
+chaincode:
+  logging:
+    level: info

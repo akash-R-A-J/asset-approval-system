@@ -1,0 +1,48 @@
+# ============================================================================
+# Asset Approval System - Git Ignore
+# ============================================================================
+
+# Dependencies
+node_modules/
+client/node_modules/
+chaincode/asset-approval/node_modules/
+
+# Build outputs
+chaincode/asset-approval/dist/
+*.tar.gz
+
+# Generated crypto materials and channel artifacts
+network/organizations/
+network/channel-artifacts/
+
+# Logs
+*.log
+log.txt
+
+# Environment files with secrets (keep .env.example for reference)
+network/docker/.env.local
+.env.production
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Package lock files (optional - uncomment if you want to ignore)
+# package-lock.json
+# chaincode/asset-approval/package-lock.json
+
+# Test artifacts
+coverage/
+.nyc_output/
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

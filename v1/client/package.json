@@ -1,0 +1,25 @@
+{
+    "name": "asset-approval-client",
+    "version": "1.0.0",
+    "description": "Node.js client for Asset Approval System on Hyperledger Fabric",
+    "main": "src/app.js",
+    "scripts": {
+        "enroll-admins": "node src/enrollAdmin.js",
+        "register-users": "node src/registerUser.js",
+        "demo": "node src/demo.js",
+        "test": "node src/test.js",
+        "test:security": "node src/securityTest.js",
+        "test:perf": "node src/perfTest.js",
+        "test:fault": "node src/faultTest.js",
+        "test:all": "node src/runAllTests.js"
+    },
+    "dependencies": {
+        "@hyperledger/fabric-gateway": "^1.4.0",
+        "@grpc/grpc-js": "^1.9.0",
+        "fabric-ca-client": "^2.2.18",
+        "fabric-network": "^2.2.18"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    }
+}
