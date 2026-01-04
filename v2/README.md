@@ -120,7 +120,25 @@ npm run demo
 5. Activating the approved asset
 6. Viewing audit history
 
-### Step 5: Stop When Done
+### Step 5: Run Tests
+
+```bash
+# Run all tests (30+ tests)
+npm test
+
+# Run specific test suites
+npm run test:abac       # ABAC access control tests
+npm run test:state      # State machine tests
+npm run test:approval   # Approval workflow tests
+npm run test:rejection  # Rejection workflow tests
+npm run test:query      # Query tests
+npm run test:security   # Security tests
+
+# List available suites
+npm run test:list
+```
+
+### Step 6: Stop When Done
 
 ```bash
 cd ..

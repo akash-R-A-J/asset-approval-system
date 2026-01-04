@@ -7,7 +7,14 @@
         "enroll": "node src/enrollAdmin.js",
         "demo": "node src/demo.js",
         "test": "node src/test.js",
-        "test:security": "node src/securityTest.js"
+        "test:abac": "node src/test.js --suite=abac",
+        "test:state": "node src/test.js --suite=state",
+        "test:approval": "node src/test.js --suite=approval",
+        "test:rejection": "node src/test.js --suite=rejection",
+        "test:query": "node src/test.js --suite=query",
+        "test:security": "node src/test.js --suite=security",
+        "test:list": "node src/test.js --list",
+        "test:help": "node src/test.js --help"
     },
     "dependencies": {
         "@hyperledger/fabric-gateway": "^1.4.0",
