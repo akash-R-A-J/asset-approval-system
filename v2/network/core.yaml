@@ -1,0 +1,128 @@
+# Peer configuration for v2 - CLI commands
+# This is a minimal config for running peer CLI commands
+
+peer:
+    id: peer0
+    networkId: dev
+    listenAddress: 0.0.0.0:7051
+    chaincodeListenAddress: 0.0.0.0:7052
+    chaincodeAddress: localhost:7052
+    address: localhost:7051
+    addressAutoDetect: true
+    keepalive:
+        minInterval: 60s
+        client:
+            interval: 60s
+            timeout: 20s
+        deliveryClient:
+            interval: 60s
+            timeout: 20s
+    gossip:
+        bootstrap: 127.0.0.1:7051
+        useLeaderElection: false
+        orgLeader: true
+        membershipTrackerInterval: 5s
+        maxBlockCountToStore: 10
+        maxPropagationBurstLatency: 10ms
+        maxPropagationBurstSize: 10
+        propagateIterations: 1
+        propagatePeerNum: 3
+        pullInterval: 4s
+        pullPeerNum: 3
+        requestStateInfoInterval: 4s
+        publishStateInfoInterval: 4s
+        stateInfoRetentionInterval: 0s
+        publishCertPeriod: 10s
+    tls:
+        enabled: true
+        clientAuthRequired: false
+    BCCSP:
+        Default: SW
+        SW:
+            Hash: SHA2
+            Security: 256
+
+# Logging
+logging:
+    level: info
+    peer: warning
+    cauthdsl: warning
+    gossip: warning
+    grpc: error
+    ledger: info
+    msp: warning
+    policies: warning
+
+vm:
+    endpoint: unix:///var/run/docker.sock
+    docker:
+        tls:
+            enabled: false
+        attachStdout: false
+        hostConfig:
+            NetworkMode: host
+            LogConfig:
+                Type: json-file
+                Config:
+                    max-size: "50m"
+                    max-file: "5"
+
+chaincode:
+    id:
+        path:
+        name:
+    builder: $(DOCKER_NS)/fabric-ccenv:$(TWO_DIGIT_VERSION)
+    pull: false
+    golang:
+        runtime: $(DOCKER_NS)/fabric-baseos:$(TWO_DIGIT_VERSION)
+        dynamicLink: false
+    java:
+        runtime: $(DOCKER_NS)/fabric-javaenv:$(TWO_DIGIT_VERSION)
+    node:
+        runtime: $(DOCKER_NS)/fabric-nodeenv:$(TWO_DIGIT_VERSION)
+    externalBuilders: []
+    installTimeout: 300s
+    startuptimeout: 300s
+    executetimeout: 30s
+    mode: net
+    keepalive: 0
+    system:
+        _lifecycle: enable
+        cscc: enable
+        lscc: enable
+        qscc: enable
+    logging:
+        level: info
+        shim: warning
+        format: '%{color}%{time:2006-01-02 15:04:05.000 MST} [%{module}] %{shortfunc} -> %{level:.4s} %{id:03x}%{color:reset} %{message}'
+
+ledger:
+    blockchain:
+    state:
+        stateDatabase: CouchDB
+        totalQueryLimit: 100000
+        couchDBConfig:
+            couchDBAddress: couchdb0:5984
+            username: admin
+            password: adminpw
+            maxRetries: 3
+            maxRetriesOnStartup: 10
+            requestTimeout: 35s
+            internalQueryLimit: 1000
+            maxBatchUpdateSize: 1000
+            createGlobalChangesDB: false
+            cacheSize: 64
+    history:
+        enableHistoryDatabase: true
+    pvtdataStore:
+        collElgProcMaxDbBatchSize: 5000
+        collElgProcDbBatchesInterval: 1000
+        deprioritizedDataReconcilerInterval: 60m
+
+operations:
+    listenAddress: 127.0.0.1:9443
+    tls:
+        enabled: false
+
+metrics:
+    provider: disabled

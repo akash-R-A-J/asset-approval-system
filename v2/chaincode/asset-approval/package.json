@@ -1,0 +1,28 @@
+{
+    "name": "asset-approval",
+    "version": "2.0.0",
+    "description": "Asset Approval Chaincode v2 - True ABAC",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "engines": {
+        "node": ">=18"
+    },
+    "scripts": {
+        "lint": "eslint . --ext .ts",
+        "build": "tsc",
+        "build:watch": "tsc -w",
+        "prepublishOnly": "npm run build",
+        "start": "fabric-chaincode-node start"
+    },
+    "engineStrict": true,
+    "author": "",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "fabric-contract-api": "^2.5.0",
+        "fabric-shim": "^2.5.0"
+    },
+    "devDependencies": {
+        "@types/node": "^18.0.0",
+        "typescript": "^5.0.0"
+    }
+}

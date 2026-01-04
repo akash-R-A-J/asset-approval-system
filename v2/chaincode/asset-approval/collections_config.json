@@ -1,0 +1,11 @@
+[
+    {
+        "name": "assetPrivateDetails",
+        "policy": "OR('Org1MSP.member', 'Org2MSP.member')",
+        "requiredPeerCount": 1,
+        "maxPeerCount": 3,
+        "blockToLive": 0,
+        "memberOnlyRead": true,
+        "memberOnlyWrite": true
+    }
+]

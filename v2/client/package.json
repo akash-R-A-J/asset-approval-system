@@ -1,0 +1,19 @@
+{
+    "name": "asset-approval-client-v2",
+    "version": "2.0.0",
+    "description": "Asset Approval System v2 Client - True ABAC",
+    "main": "src/index.js",
+    "scripts": {
+        "enroll": "node src/enrollAdmin.js",
+        "demo": "node src/demo.js",
+        "test": "node src/test.js",
+        "test:security": "node src/securityTest.js"
+    },
+    "dependencies": {
+        "@hyperledger/fabric-gateway": "^1.4.0",
+        "@grpc/grpc-js": "^1.9.0"
+    },
+    "engines": {
+        "node": ">=18"
+    }
+}
