@@ -1,167 +1,166 @@
-<h1 align="center">Asset Approval System - Hyperledger Fabric</h1>
+<h1 align="center">🏛️ Asset Approval System</h1>
 
 <div align="center">
 
 ![Hyperledger Fabric](https://img.shields.io/badge/Hyperledger%20Fabric-v2.5-blue)
 ![Node.js](https://img.shields.io/badge/Node.js-18+-green)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue)
 ![License](https://img.shields.io/badge/License-Apache%202.0-yellow)
 ![Docker](https://img.shields.io/badge/Docker-Required-blue)
 
-**A production-grade permissioned blockchain system for multi-organization asset approval workflows.**
+**Enterprise-grade permissioned blockchain for multi-organization asset approval workflows.**
 
-📚 **[View Full Documentation](https://deepwiki.com/akash-R-A-J/asset-approval-system)**
+[📚 Full Documentation](https://deepwiki.com/akash-R-A-J/asset-approval-system) · [🐛 Report Bug](https://github.com/akash-R-A-J/asset-approval-system/issues) · [💡 Request Feature](https://github.com/akash-R-A-J/asset-approval-system/issues)
 
 </div>
 
 ---
 
-## 📖 Overview
+## 🎯 What is This?
 
-This repository contains **two implementations** of the Asset Approval System built on Hyperledger Fabric, demonstrating enterprise blockchain patterns for multi-organization workflows.
+A **production-ready blockchain solution** for enterprises that need **multiple organizations to approve assets** before they become valid. Built on Hyperledger Fabric.
 
 ### The Problem
 
-Enterprise asset approvals require multiple organizations to review and sign off, but traditional centralized systems suffer from:
-- ❌ Single point of failure
-- ❌ No audit trail of approvals
-- ❌ Trust issues between organizations
-- ❌ Data tampering risks
-- ❌ No privacy for sensitive information
-
-### The Solution
-
-A **decentralized, permissioned blockchain** using Hyperledger Fabric that provides:
-- ✅ **Distributed trust** across multiple organizations
-- ✅ **Immutable audit trail** for every action
-- ✅ **Fault tolerance** via Raft consensus
-- ✅ **Private data** shared only with authorized orgs
-- ✅ **Smart contract enforcement** of business rules
+| Traditional Systems | This Solution |
+|---------------------|---------------|
+| ❌ Single point of failure | ✅ Distributed across 3+ orgs |
+| ❌ "Who approved what?" is unclear | ✅ Immutable audit trail |
+| ❌ Data can be tampered | ✅ Cryptographically secured |
+| ❌ No privacy for sensitive data | ✅ Private data collections |
+| ❌ Trust issues between orgs | ✅ Smart contract enforcement |
 
 ---
 
-## 🏗️ Project Versions
+## 🏗️ Two Versions Available
 
-| Feature | [v0](./v0/) | [v1](./v1/) |
-|---------|-------------|-------------|
-| **Chaincode Language** | JavaScript | TypeScript |
-| **Peers per Org** | 1 | 3 (Endorser, Query, Committer) |
-| **Total Containers** | ~12 | ~24 |
-| **Focus** | Simplicity & Learning | Production-Scale Architecture |
-| **State Machine** | `PENDING → APPROVED/REJECTED` | `CREATED → PENDING → APPROVED → ACTIVE` |
-| **Best For** | POC/Demo | Production-ready deployments |
+| | **v0 - Simple** | **v1 - Production** |
+|---|-----------------|---------------------|
+| **Best For** | 📚 Learning, POC, Demos | 🚀 Production deployment |
+| **Chaincode** | JavaScript | TypeScript |
+| **Peers/Org** | 1 | 3 (Endorser, Query, Committer) |
+| **Containers** | ~12 | ~24 |
+| **State Machine** | 3 states | 6 states |
+| **Resubmit Rejected?** | ❌ No | ✅ Yes |
+| **Input Validation** | Client-side | Chaincode + Client |
+| **Test Suites** | Basic | Security, Fault, Performance |
 
-### Quick Comparison
+### Quick Visual
 
 ```
-v0 (Simple)                          v1 (Scalable)
-┌─────────────────┐                  ┌─────────────────┐
-│ Org1            │                  │ Org1            │
-│ ├── 1 Peer      │                  │ ├── peer0 (E)   │
-│ ├── 1 CA        │                  │ ├── peer1 (Q)   │
-│ └── CouchDB     │                  │ ├── peer2 (C)   │
-└─────────────────┘                  │ ├── CA          │
-                                     │ └── CouchDB     │
-                                     └─────────────────┘
+v0 (Simple)                         v1 (Production)
+┌─────────────────┐                 ┌─────────────────┐
+│ Org1            │                 │ Org1            │
+│ └── 1 Peer      │                 │ ├── peer0 (E)   │
+│                 │                 │ ├── peer1 (Q)   │
+│                 │                 │ └── peer2 (C)   │
+└─────────────────┘                 └─────────────────┘
 (E)=Endorser (Q)=Query (C)=Committer
 ```
 
+**👉 Start with v0 to learn, graduate to v1 for production.**
+
 ---
 
-## 🚀 Getting Started
-
-### Prerequisites
+## ⚡ 5-Minute Quick Start
 
 > ⚠️ **Requires Linux or WSL2** - Cannot run on native Windows
 
-| Software | Version |
-|----------|---------|
-| **Docker** | 20+ |
-| **Docker Compose** | v2+ |
-| **Node.js** | 18+ |
-| **Hyperledger Fabric Binaries** | 2.5.x |
-| **jq** | Any |
-
-### Installation
+### Prerequisites
 
 ```bash
-# Clone the repository
+# Check you have everything
+docker --version        # Need 20+
+node --version          # Need 18+
+peer version            # Need Fabric 2.5.x
+```
+
+<details>
+<summary>📦 Don't have prerequisites? Click to expand installation guide</summary>
+
+```bash
+# Ubuntu/WSL2
+
+# 1. Docker
+curl -fsSL https://get.docker.com | sudo sh
+sudo usermod -aG docker $USER
+newgrp docker
+
+# 2. Node.js 18
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# 3. Fabric Binaries
+cd ~
+curl -sSLO https://raw.githubusercontent.com/hyperledger/fabric/main/scripts/install-fabric.sh
+chmod +x install-fabric.sh
+./install-fabric.sh --fabric-version 2.5.0 binary
+echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+source ~/.bashrc
+
+# 4. Other tools
+sudo apt install -y jq git
+```
+
+</details>
+
+### Run It
+
+```bash
+# Clone
 git clone https://github.com/akash-R-A-J/asset-approval-system.git
 cd asset-approval-system
 
 # Choose your version
-cd v0  # Simple version for learning
+cd v0   # Simple version for learning
 # OR
-cd v1  # Production-scale version
+cd v1   # Production version
 
-# Follow the README in each version for specific setup instructions
+# Start (takes 3-5 minutes first time)
+./scripts/start-all.sh   # v0
+./start-all.sh           # v1
+
+# See it work
+./scripts/demo.sh        # v0
+npm run demo             # v1 (from client/ folder)
 ```
 
 ---
 
-## 📐 Common Architecture
+## 🔐 How It Works
 
-Both versions share the same core architecture:
+### Three Organizations, Different Roles
 
-### Ordering Service
-- **3 Raft nodes** for crash fault tolerance
-- Survives 1 orderer failure
-
-### Organizations
-| Org | Role | Permissions |
-|-----|------|-------------|
+| Org | Role | Can Do |
+|-----|------|--------|
 | **Org1** | Asset Owner | Create, Update, Delete assets |
 | **Org2** | Auditor | Approve/Reject, View private data |
 | **Org3** | Regulator | Approve/Reject, Public data only |
 
-### Private Data Collections
-- Sensitive data (valuations, internal notes) stored in private collections
-- Only Org1 + Org2 can access private data
-- Org3 (Regulator) sees only public asset status
-
 ### Asset Lifecycle
 
 ```
-     ┌─────────┐
-     │ CREATE  │ ← Org1 creates asset
-     └────┬────┘
-          │
-          ▼
-     ┌─────────┐     Org2/Org3       ┌─────────┐
-     │ PENDING │ ─── approves ─────► │APPROVED │ ◄── FINAL
-     └────┬────┘                     └─────────┘
-          │
-          └── Org2/Org3 rejects ───► ┌──────────┐
-                                     │ REJECTED │ ◄── FINAL
-                                     └──────────┘
+         ┌─────────┐     submit      ┌─────────────────┐
+         │ CREATED │ ─────────────▶ │ PENDING_APPROVAL │
+         └─────────┘                └────────┬────────┘
+                                             │
+        ┌────────────────────────────────────┼────────────────────────────────────┐
+        │                                    │                                    │
+        ▼                                    ▼                                    ▼
+  ┌──────────┐                         ┌──────────┐                        ┌──────────┐
+  │ APPROVED │ ───▶ ACTIVE ───▶       │ REJECTED │ ──▶ Can Resubmit! (v1) │ DELETED  │
+  └──────────┘                         └──────────┘                        └──────────┘
+       ↑                                                                         ↑
+       │                    Both Org2 AND Org3 must approve                     │
+       └────────────────────────────────────────────────────────────────────────┘
 ```
 
----
+### Private Data
 
-## 🔐 Organization-Based Access Control (OBAC)
-
-| Function | Org1 (Owner) | Org2 (Auditor) | Org3 (Regulator) |
-|----------|:------------:|:--------------:|:----------------:|
-| CreateAsset | ✅ | ❌ | ❌ |
-| ApproveAsset | ❌ | ✅ | ✅ |
-| RejectAsset | ❌ | ✅ | ✅ |
-| QueryAsset (public) | ✅ | ✅ | ✅ |
-| QueryPrivateDetails | ✅ | ✅ | ❌ |
-| DeleteAsset | ✅ | ❌ | ❌ |
-
----
-
-## 🧪 Testing
-
-Both versions include comprehensive test suites:
-
-| Test Suite | Description |
-|------------|-------------|
-| **Security Tests** | OBAC access control validation |
-| **State Machine Tests** | Lifecycle enforcement |
-| **Fault Tolerance Tests** | Raft consensus behavior |
-| **Private Data Tests** | Collection access restrictions |
-
-See individual version READMEs for specific test commands.
+- **Sensitive info** (valuations, internal notes) stored in private collection
+- Only **Org1 + Org2** can access
+- **Org3** (Regulator) sees only public status
+- Hash stored on-chain for verification
 
 ---
 
@@ -169,55 +168,88 @@ See individual version READMEs for specific test commands.
 
 ```
 asset-approval-system/
-├── README.md           # This file
-├── .gitignore          # Root gitignore
+├── 📄 README.md              # You are here
+├── 📁 v0/                    # Simple JavaScript version
+│   ├── chaincode/           # Smart contracts
+│   ├── client/              # CLI application
+│   ├── network/             # Docker & config
+│   ├── scripts/             # Automation
+│   └── docs/                # Documentation
 │
-├── v0/                 # Simple JavaScript version
-│   ├── chaincode/      # JavaScript smart contracts
-│   ├── client/         # Node.js client application
-│   ├── network/        # Docker + network config
-│   ├── scripts/        # Automation scripts
-│   └── docs/           # Documentation
-│
-└── v1/                 # Production TypeScript version
-    ├── chaincode/      # TypeScript smart contracts
-    ├── client/         # Node.js client application
-    ├── network/        # Docker + network config
-    ├── scripts/        # Automation scripts
-    └── docs/           # Documentation
+└── 📁 v1/                    # Production TypeScript version
+    ├── chaincode/           # TypeScript smart contracts
+    ├── client/              # Node.js client + tests
+    ├── network/             # Multi-peer Docker config
+    ├── scripts/             # Automation
+    └── docs/                # Documentation
 ```
 
 ---
 
-## 🛠️ Common Troubleshooting
+## 🧪 Testing
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| `bad interpreter` | Windows line endings (CRLF) | Run `dos2unix scripts/*.sh` |
-| `fabric-ca-client: not found` | Binaries not in PATH | Install and add `~/bin` to PATH |
-| Port conflicts | Previous containers running | `docker stop $(docker ps -aq)` |
-| Permission denied | Root-owned CA files | Use `sudo rm -rf` for cleanup |
+Both versions include comprehensive test suites:
+
+```bash
+# v0 - From project root
+./scripts/run-tests.sh
+
+# v1 - From client/ folder
+npm run test:all          # All tests with summary
+npm run test:security     # RBAC & access control
+npm run test:fault        # Raft consensus
+```
+
+| Test Suite | What It Validates |
+|------------|-------------------|
+| **Security** | OBAC permissions, private data access |
+| **State Machine** | Invalid transitions blocked |
+| **Fault Tolerance** | Raft consensus under failure |
+| **History/Audit** | Complete transaction trail |
+
+---
+
+## 🛠️ Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `bad interpreter: /bin/bash^M` | Windows line endings | `dos2unix scripts/*.sh` |
+| `peer: command not found` | Fabric not in PATH | Add `~/bin` to PATH |
+| Port already in use | Old containers running | `docker stop $(docker ps -aq)` |
+| Permission denied | Root-owned files | `sudo chown -R $USER:$USER .` |
+| ENDORSEMENT_POLICY_FAILURE | Cold chaincode | Wait 10s and retry |
 
 ---
 
 ## 📚 Documentation
 
-- **[v0 Documentation](./v0/docs/)** - Simple version guides
-- **[v1 Documentation](./v1/docs/)** - Production version guides
+- **[v0 README](./v0/README.md)** - Complete guide for simple version
+- **[v1 README](./v1/README.md)** - Complete guide for production version
 - **[DeepWiki](https://deepwiki.com/akash-R-A-J/asset-approval-system)** - Full online documentation
+- **[Architecture Docs](./v0/docs/)** - Technical deep-dives
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ---
 
 ## 📄 License
 
-Apache-2.0
+Apache-2.0 - see [LICENSE](./v0/LICENSE) for details.
 
 ---
 
 <div align="center">
 
-**Built with Hyperledger Fabric v2.5 | Raft Consensus | Private Data Collections**
+**Built with ❤️ using Hyperledger Fabric v2.5**
 
-*Demonstrates enterprise blockchain patterns: OBAC, State Machines, Fault Tolerance*
+*Raft Consensus · Private Data Collections · Organization-Based Access Control*
 
 </div>
