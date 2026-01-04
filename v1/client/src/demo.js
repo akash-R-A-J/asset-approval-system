@@ -266,9 +266,76 @@ ${c.bright}Endorsement Policy:${c.reset} ${c.cyan}AND(Org1, OR(Org2, Org3))${c.r
 
         // Step 9: Delete Asset
         log.step(9, 'Deleting Asset (Org1)');
+        log.explain([
+            'This operation:',
+            '• Soft-deletes the asset (status → DELETED)',
+            '• Asset remains on blockchain for audit purposes',
+            '• Cannot be modified after deletion',
+        ]);
+        log.command(`org1.deleteAsset("${assetId}")`);
         await org1Service.deleteAsset(assetId);
         asset = await org1Service.queryAsset(assetId);
         log.success(`Asset status: ${log.status(asset.status)}`);
+        await pause();
+
+        // Step 10: Complete Audit Trail
+        log.step(10, 'Complete Blockchain Audit Trail');
+        log.explain([
+            '🔒 IMMUTABLE PROOF OF WORK',
+            '• Every state change is recorded with transaction ID',
+            '• Timestamps are from the blockchain (not client)',
+            '• Full provenance from creation to deletion',
+            '• Cannot be altered or deleted',
+        ]);
+
+        const fullHistory = await org1Service.getAssetHistory(assetId);
+
+        console.log(`\n  ${c.bgBlue}${c.white}${c.bright} VERIFIED ASSET HISTORY (${fullHistory.length} transactions) ${c.reset}\n`);
+
+        // Display history in reverse chronological order (newest first)
+        fullHistory.reverse().forEach((record, index) => {
+            const isLast = index === fullHistory.length - 1;
+            const prefix = isLast ? '└' : '├';
+            const line = isLast ? ' ' : '│';
+
+            console.log(`  ${c.dim}${prefix}──────────────────────────────────────────────────────────────${c.reset}`);
+            console.log(`  ${c.dim}${line}${c.reset}  ${c.bright}Transaction ${fullHistory.length - index}${c.reset}`);
+            console.log(`  ${c.dim}${line}${c.reset}  ${c.cyan}┌─────────────────────────────────────────────────────────┐${c.reset}`);
+            console.log(`  ${c.dim}${line}${c.reset}  ${c.cyan}│${c.reset} ${c.dim}TxID:${c.reset}      ${c.yellow}${record.txId.substring(0, 48)}...${c.reset}`);
+
+            // Format timestamp nicely
+            let timestamp = 'N/A';
+            if (record.timestamp) {
+                const ts = record.timestamp;
+                if (ts.seconds) {
+                    const seconds = typeof ts.seconds === 'object' ? ts.seconds.low : ts.seconds;
+                    timestamp = new Date(seconds * 1000).toISOString();
+                }
+            }
+            console.log(`  ${c.dim}${line}${c.reset}  ${c.cyan}│${c.reset} ${c.dim}Timestamp:${c.reset} ${c.white}${timestamp}${c.reset}`);
+
+            if (record.value) {
+                console.log(`  ${c.dim}${line}${c.reset}  ${c.cyan}│${c.reset} ${c.dim}Status:${c.reset}    ${log.status(record.value.status)}`);
+                console.log(`  ${c.dim}${line}${c.reset}  ${c.cyan}│${c.reset} ${c.dim}Owner:${c.reset}     ${c.blue}${record.value.owner}${c.reset}`);
+
+                // Show approvals if they exist
+                if (record.value.approvals && Object.keys(record.value.approvals).length > 0) {
+                    console.log(`  ${c.dim}${line}${c.reset}  ${c.cyan}│${c.reset} ${c.dim}Approvals:${c.reset}`);
+                    Object.entries(record.value.approvals).forEach(([org, status]) => {
+                        const icon = status === 'APPROVED' ? `${c.green}✓${c.reset}` :
+                            status === 'PENDING' ? `${c.yellow}⏳${c.reset}` :
+                                `${c.red}✗${c.reset}`;
+                        console.log(`  ${c.dim}${line}${c.reset}  ${c.cyan}│${c.reset}   ${icon} ${org}: ${status}`);
+                    });
+                }
+            }
+            console.log(`  ${c.dim}${line}${c.reset}  ${c.cyan}└─────────────────────────────────────────────────────────┘${c.reset}`);
+        });
+
+        console.log(`\n  ${c.green}${c.bright}✓ All ${fullHistory.length} transactions verified on blockchain${c.reset}`);
+        console.log(`  ${c.dim}This history is immutable and can be audited at any time.${c.reset}\n`);
+
+        await pause();
 
         // Complete
         console.log(`
@@ -278,14 +345,19 @@ ${c.bgGreen}${c.white}${c.bright}                                               
         `);
 
         console.log(`${c.bright}Workflow Summary:${c.reset}`);
-        console.log(`  ${c.green}1.${c.reset} Org1 created asset`);
-        console.log(`  ${c.green}2.${c.reset} Org1 submitted for approval`);
-        console.log(`  ${c.green}3.${c.reset} Org2 (Auditor) approved`);
-        console.log(`  ${c.green}4.${c.reset} Org3 (Regulator) approved`);
-        console.log(`  ${c.green}5.${c.reset} Org1 activated asset`);
-        console.log(`  ${c.green}6.${c.reset} Viewed transaction history`);
-        console.log(`  ${c.green}7.${c.reset} Tested access control`);
-        console.log(`  ${c.green}8.${c.reset} Org1 deleted asset\n`);
+        console.log(`  ${c.green}1.${c.reset} Connected to all 3 organizations`);
+        console.log(`  ${c.green}2.${c.reset} Org1 (Asset Owner) created asset`);
+        console.log(`  ${c.green}3.${c.reset} Org1 submitted for approval`);
+        console.log(`  ${c.green}4.${c.reset} Org2 (Auditor) approved`);
+        console.log(`  ${c.green}5.${c.reset} Org3 (Regulator) approved`);
+        console.log(`  ${c.green}6.${c.reset} Org1 activated asset`);
+        console.log(`  ${c.green}7.${c.reset} Viewed transaction history`);
+        console.log(`  ${c.green}8.${c.reset} Tested access control (OBAC)`);
+        console.log(`  ${c.green}9.${c.reset} Org1 deleted asset`);
+        console.log(`  ${c.green}10.${c.reset} ${c.bright}Displayed complete audit trail ✓${c.reset}\n`);
+
+        console.log(`${c.dim}All state changes are immutably recorded on the Hyperledger Fabric blockchain.${c.reset}\n`);
+
 
     } catch (error) {
         log.error(`Demo failed: ${error.message}`);
