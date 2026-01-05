@@ -1,70 +1,231 @@
-<h1 align="center">🚀 Asset Approval System v1</h1>
+<h1 align="center">
+  <br>
+  🚀 Asset Approval System v1
+  <br>
+</h1>
 
-<div align="center">
+<h4 align="center">Multi-peer architecture with <a href="https://www.typescriptlang.org/">TypeScript</a> chaincode</h4>
 
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue)
-![Fabric](https://img.shields.io/badge/Fabric-2.5-blue)
-![Containers](https://img.shields.io/badge/Containers-24-orange)
-![Production](https://img.shields.io/badge/Status-Production--Ready-green)
+<p align="center">
+  <img src="https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Fabric-2.5-2F3134?style=for-the-badge&logo=hyperledger&logoColor=white" alt="Fabric">
+  <img src="https://img.shields.io/badge/Containers-24-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Containers">
+  <img src="https://img.shields.io/badge/Peers_per_Org-3-green?style=for-the-badge" alt="Multi-Peer">
+</p>
 
-**Production-grade implementation with TypeScript chaincode, multi-peer architecture, and comprehensive testing.**
-
-</div>
-
----
-
-## ✨ What's Different from v0?
-
-| Feature | v0 (Simple) | v1 (This Version) |
-|---------|-------------|-------------------|
-| Chaincode | JavaScript | **TypeScript** with type safety |
-| Peers per Org | 1 | **3** (Endorser, Query, Committer) |
-| State Machine | 3 states | **6 states** with explicit transitions |
-| Input Validation | Client only | **Chaincode + Client** |
-| Rejected Assets | Final | **Can be resubmitted** |
-| SDK | fabric-network | **fabric-gateway** (modern) |
-| Test Coverage | Basic | **Security, Fault, Performance** |
+<p align="center">
+  <a href="#-key-features">Features</a> •
+  <a href="#-getting-started">Getting Started</a> •
+  <a href="#-architecture">Architecture</a> •
+  <a href="#-test-suites">Tests</a>
+</p>
 
 ---
 
-## ⚡ Quick Start
+## ✨ Key Features
 
-### Prerequisites
+<table>
+  <tr>
+    <td>📘</td>
+    <td><b>TypeScript</b></td>
+    <td>Type-safe chaincode with interfaces and enums</td>
+  </tr>
+  <tr>
+    <td>🖥️</td>
+    <td><b>Multi-Peer</b></td>
+    <td>3 peers per org (Endorser, Query, Committer)</td>
+  </tr>
+  <tr>
+    <td>🔄</td>
+    <td><b>6-State Machine</b></td>
+    <td>Complete lifecycle with resubmission support</td>
+  </tr>
+  <tr>
+    <td>✅</td>
+    <td><b>Input Validation</b></td>
+    <td>Chaincode-level validation with clear error messages</td>
+  </tr>
+  <tr>
+    <td>🧪</td>
+    <td><b>Comprehensive Tests</b></td>
+    <td>Security, fault tolerance, and performance tests</td>
+  </tr>
+  <tr>
+    <td>🎯</td>
+    <td><b>Endorsement Awareness</b></td>
+    <td>Explicit peer roles aligned with endorsement, query, and commit paths</td>
+  </tr>
+</table>
 
-| Software | Version | Check Command |
-|----------|---------|---------------|
-| Docker | 20+ | `docker --version` |
-| Docker Compose | v2+ | `docker compose version` |
-| Node.js | 18+ | `node --version` |
-| Fabric Binaries | 2.5.x | `peer version` |
-| jq | Any | `jq --version` |
+---
 
-### One-Command Startup
+## 📊 Version Comparison
+
+| Aspect | v0 | v1 (This) | v2 |
+|--------|:--:|:---------:|:--:|
+| **Language** | JavaScript | **TypeScript** | TypeScript |
+| **Peers per Org** | 1 | **3** | 1 |
+| **Container Count** | 12 | **24** | 12 |
+| **Resubmission** | ❌ | **✅** | ✅ |
+| **Access Control** | OBAC | OBAC | **ABAC** |
+
+---
+
+## 🚀 Getting Started
+
+### Step 1: Install Prerequisites
+
+> ⚠️ **Requires Linux or WSL2** - Hyperledger Fabric cannot run on native Windows.
+
+#### Install Docker
 
 ```bash
-# Clone (if not already)
+# Update packages
+sudo apt-get update
+
+# Install Docker
+sudo apt-get install -y docker.io docker-compose-plugin
+
+# Add your user to docker group (logout/login after)
+sudo usermod -aG docker $USER
+
+# Start Docker
+sudo systemctl start docker
+sudo systemctl enable docker
+```
+
+#### Install Node.js 18+
+
+```bash
+# Install nvm (Node Version Manager)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+
+# Reload shell
+source ~/.bashrc
+
+# Install Node.js 18
+nvm install 18
+nvm use 18
+```
+
+#### Install jq
+
+```bash
+sudo apt-get install -y jq
+```
+
+#### Install Hyperledger Fabric Binaries
+
+```bash
+# Create directory for Fabric
+mkdir -p ~/fabric && cd ~/fabric
+
+# Download Fabric binaries (2.5.0)
+curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.5.0 1.5.5
+
+# Add to PATH (add this to ~/.bashrc for permanence)
+export PATH=$PATH:~/fabric/fabric-samples/bin
+```
+
+---
+
+### Step 2: Verify Prerequisites
+
+```bash
+# Docker (should show 20+)
+docker --version
+
+# Docker Compose (should show v2+)
+docker compose version
+
+# Node.js (should show 18+)
+node --version
+
+# Fabric peer (should show 2.5.x)
+peer version
+
+# jq (any version)
+jq --version
+```
+
+**Expected output:**
+```
+Docker version 24.0.x
+Docker Compose version v2.x.x
+v18.x.x
+peer:
+ Version: 2.5.0
+jq-1.6
+```
+
+---
+
+### Step 3: Clone the Repository
+
+```bash
+# Clone the repository
 git clone https://github.com/akash-R-A-J/asset-approval-system.git
+
+# Navigate to v1
 cd asset-approval-system/v1
+```
 
-# Make scripts executable (first time only)
-chmod +x *.sh scripts/*.sh
+---
 
-# Start everything (3-5 minutes)
+### Step 4: Make Scripts Executable
+
+```bash
+# Make all scripts executable
+chmod +x *.sh
+chmod +x scripts/*.sh
+```
+
+---
+
+### Step 5: Start the Network
+
+```bash
 ./start-all.sh
 ```
 
 **What happens:**
 ```
-✓ Prerequisites checked
-✓ Crypto materials generated
-✓ 24 Docker containers started
-✓ Channel created & peers joined
-✓ Chaincode deployed with private data
-✓ Client dependencies installed
-✓ Demo executed successfully
+✓ Checking prerequisites...
+✓ Generating crypto materials...
+✓ Starting network (24 containers)...
+✓ Creating channel...
+✓ Joining all 9 peers to channel...
+✓ Deploying TypeScript chaincode...
+✓ Installing client dependencies...
+✓ Running demo...
+
+════════════════════════════════════════════
+  SUCCESS! Network is ready.
+════════════════════════════════════════════
 ```
 
-### Run Tests
+**Estimated time:** 5-8 minutes (24 containers + TypeScript compilation)
+
+---
+
+### Step 6: Run the Demo
+
+```bash
+cd client
+npm run demo
+```
+
+This runs an interactive demo showing:
+1. Asset creation by Owner
+2. Submission for approval
+3. Approval by Auditor
+4. Approval by Regulator
+5. Activation by Owner
+6. Full audit trail
+
+---
+
+### Step 7: Run Tests
 
 ```bash
 cd client
@@ -72,182 +233,134 @@ cd client
 # Run all tests with summary
 npm run test:all
 
-# Individual suites
+# Or run individual test suites:
 npm run test           # Comprehensive tests
 npm run test:security  # RBAC & access control (12 tests)
 npm run test:fault     # Raft fault tolerance
 npm run test:perf      # Performance benchmarks
 ```
 
-### Stop Everything
+---
+
+### Step 8: Stop the Network
 
 ```bash
+# From v1 directory
 ./stop-all.sh
+```
+
+---
+
+## 🛠️ Troubleshooting
+
+### Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| `docker: command not found` | Install Docker: `sudo apt-get install docker.io` |
+| `permission denied` on docker | Run `sudo usermod -aG docker $USER` and re-login |
+| `peer: command not found` | Add Fabric binaries to PATH |
+| Port already in use | Run `docker stop $(docker ps -aq)` |
+| TypeScript compile error | `cd chaincode/asset-approval && npm run build` |
+| ENDORSEMENT_POLICY_FAILURE | Wait 30s and retry (cold start issue) |
+
+### Clean Restart
+
+```bash
+# Stop everything
+./stop-all.sh
+
+# Remove all Docker volumes
+docker volume prune -f
+
+# Remove all Docker networks
+docker network prune -f
+
+# Remove generated files
+rm -rf network/organizations network/channel-artifacts
+
+# Start fresh
+./start-all.sh
+```
+
+### View Container Logs
+
+```bash
+# Peer logs
+docker logs peer0.org1.example.com
+
+# Follow logs in real-time
+docker logs -f peer0.org1.example.com
+
+# Chaincode logs
+docker logs $(docker ps -q --filter name=dev-peer0.org1)
+
+# All containers
+docker-compose -f network/docker/docker-compose.yaml logs
 ```
 
 ---
 
 ## 🏗️ Architecture
 
-### Network Topology (24 Containers)
+### Multi-Peer Topology (24 Containers)
 
 ```
-┌──────────────────────────────────────────────────────────────────────────┐
-│                        ORDERING SERVICE (Raft)                           │
-│  ┌────────────┐    ┌────────────┐    ┌────────────┐                     │
-│  │  orderer   │    │  orderer2  │    │  orderer3  │                     │
-│  │   :7050    │    │   :8050    │    │   :9050    │                     │
-│  └────────────┘    └────────────┘    └────────────┘                     │
-│                         Can tolerate 1 failure                           │
-├──────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  ORG1 (Asset Owner)        ORG2 (Auditor)         ORG3 (Regulator)      │
-│  ┌─────────────────┐      ┌─────────────────┐    ┌─────────────────┐    │
-│  │ peer0     :7051 │ (E)  │ peer0     :8051 │(E) │ peer0     :9051 │(E) │
-│  │ peer1     :7151 │ (Q)  │ peer1     :8151 │(Q) │ peer1     :9151 │(Q) │
-│  │ peer2     :7251 │ (C)  │ peer2     :8251 │(C) │ peer2     :9251 │(C) │
-│  │ CA        :7054 │      │ CA        :8054 │    │ CA        :9054 │    │
-│  │ CouchDB ×3      │      │ CouchDB ×3      │    │ CouchDB ×3      │    │
-│  └─────────────────┘      └─────────────────┘    └─────────────────┘    │
-│                                                                          │
-│  (E) Endorser/Leader  (Q) Query  (C) Committer                          │
-└──────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                          ORDERING SERVICE (Raft)                              │
+│  ┌────────────────┐   ┌────────────────┐   ┌────────────────┐                │
+│  │    orderer     │   │    orderer2    │   │    orderer3    │                │
+│  │     :7050      │   │     :8050      │   │     :9050      │                │
+│  └────────────────┘   └────────────────┘   └────────────────┘                │
+│                     Crash Fault Tolerant (1/3)                                │
+├──────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┏━━━━━━━━━━━━━━━━━┓    ┏━━━━━━━━━━━━━━━━━┓    ┏━━━━━━━━━━━━━━━━━━┓         │
+│  ┃  ORG1 (Owner)   ┃    ┃  ORG2 (Auditor) ┃    ┃ ORG3 (Regulator) ┃         │
+│  ┣━━━━━━━━━━━━━━━━━┫    ┣━━━━━━━━━━━━━━━━━┫    ┣━━━━━━━━━━━━━━━━━━┫         │
+│  ┃ peer0 :7051 (E) ┃    ┃ peer0 :8051 (E) ┃    ┃ peer0  :9051 (E) ┃         │
+│  ┃ peer1 :7151 (Q) ┃    ┃ peer1 :8151 (Q) ┃    ┃ peer1  :9151 (Q) ┃         │
+│  ┃ peer2 :7251 (C) ┃    ┃ peer2 :8251 (C) ┃    ┃ peer2  :9251 (C) ┃         │
+│  ┃ CA       :7054  ┃    ┃ CA       :8054  ┃    ┃ CA        :9054  ┃         │
+│  ┃ CouchDB ×3      ┃    ┃ CouchDB ×3      ┃    ┃ CouchDB ×3       ┃         │
+│  ┗━━━━━━━━━━━━━━━━━┛    ┗━━━━━━━━━━━━━━━━━┛    ┗━━━━━━━━━━━━━━━━━━┛         │
+│                                                                              │
+│  (E) Endorser/Leader    (Q) Query Node    (C) Committer Node                │
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
-
-### Peer Roles Explained
-
-| Role | Gossip Config | Purpose |
-|------|--------------|---------|
-| **Endorser (peer0)** | Static Leader | Signs transactions, receives blocks from orderer |
-| **Query (peer1)** | Follower | Handles read queries, reduces load on endorser |
-| **Committer (peer2)** | Follower | Validates and commits blocks |
 
 ---
 
 ## 🔄 State Machine
 
 ```
-                                                    ┌─────────────┐
-     ┌─────────────┐    submit    ┌──────────────┐  │             │
-     │   CREATED   │ ───────────▶ │   PENDING    │  │   DELETED   │
-     └──────┬──────┘              └──────┬───────┘  │             │
-            │                            │          └──────▲──────┘
-            │                    ┌───────┴───────┐         │
-            │                    │               │         │
-            │               approve          reject        │
-            │                    │               │         │
-            │                    ▼               ▼         │
-            │             ┌──────────┐    ┌──────────┐     │
-            │             │ APPROVED │    │ REJECTED │─────┤
-            │             └────┬─────┘    └────┬─────┘     │
-            │                  │               │           │
-            │             activate        resubmit         │
-            │                  │               │           │
-            │                  ▼               │           │
-            │             ┌──────────┐         │           │
-            └────────────▶│  ACTIVE  │◀────────┘           │
-                          └────┬─────┘                     │
-                               │                           │
-                               └───────── delete ──────────┘
+CREATED → PENDING_APPROVAL → APPROVED → ACTIVE → DELETED
+                          ↓
+                      REJECTED → PENDING_APPROVAL (resubmit) ✨
 ```
 
-**Key Transitions:**
-- `CREATED → PENDING_APPROVAL` - Owner submits for review
-- `PENDING_APPROVAL → APPROVED` - Both Org2 AND Org3 approve
-- `PENDING_APPROVAL → REJECTED` - Any approver rejects
-- `REJECTED → PENDING_APPROVAL` - **Can resubmit!** (unlike v0)
-- `APPROVED → ACTIVE` - Owner activates
-- `Any State → DELETED` - Soft delete for audit trail
+| From | To | Action | Role |
+|------|----|--------|------|
+| CREATED | PENDING_APPROVAL | Submit for review | Owner |
+| PENDING | APPROVED | Both approve | Auditor + Regulator |
+| PENDING | REJECTED | Any rejects | Auditor or Regulator |
+| **REJECTED** | **PENDING** | **Resubmit** ✨ | Owner |
+| APPROVED | ACTIVE | Activate | Owner |
+| Any | DELETED | Soft delete | Owner |
 
 ---
 
 ## 🔐 Access Control (OBAC)
 
-| Operation | Org1 (Owner) | Org2 (Auditor) | Org3 (Regulator) |
-|-----------|:------------:|:--------------:|:----------------:|
+| Operation | Owner | Auditor | Regulator |
+|-----------|:-----:|:-------:|:---------:|
 | CreateAsset | ✅ | ❌ | ❌ |
 | SubmitForApproval | ✅ | ❌ | ❌ |
 | ApproveAsset | ❌ | ✅ | ✅ |
 | RejectAsset | ❌ | ✅ | ✅ |
-| UpdateAsset | ✅ | ❌ | ❌ |
 | ActivateAsset | ✅ | ❌ | ❌ |
 | DeleteAsset | ✅ | ❌ | ❌ |
-| QueryAsset | ✅ | ✅ | ✅ |
 | ReadPrivateData | ✅ | ✅ | ❌ |
-
----
-
-## 📁 Project Structure
-
-```
-v1/
-├── 📜 start-all.sh              # One-command startup
-├── 📜 stop-all.sh               # Clean shutdown
-│
-├── 📂 chaincode/asset-approval/
-│   ├── src/
-│   │   ├── assetApproval.ts    # Main contract (TypeScript)
-│   │   └── index.ts            # Entry point
-│   ├── collections_config.json  # Private data config
-│   ├── package.json
-│   └── tsconfig.json
-│
-├── 📂 client/
-│   ├── src/
-│   │   ├── fabricClient.js     # Fabric gateway client
-│   │   ├── assetService.js     # High-level API
-│   │   ├── demo.js             # Interactive demonstration
-│   │   ├── test.js             # Comprehensive tests
-│   │   ├── securityTest.js     # RBAC tests
-│   │   ├── faultTest.js        # Fault tolerance tests
-│   │   ├── perfTest.js         # Performance tests
-│   │   └── runAllTests.js      # Test runner
-│   ├── connection-profiles/    # Org connection configs
-│   └── package.json
-│
-├── 📂 network/
-│   ├── configtx.yaml           # Channel & org policies
-│   ├── crypto-config.yaml      # Certificate config
-│   ├── core.yaml               # Peer config
-│   └── docker/
-│       ├── docker-compose.yaml # 24 containers
-│       └── .env                # Credentials
-│
-├── 📂 scripts/
-│   ├── check-prerequisites.sh
-│   ├── start-network.sh
-│   ├── deploy-chaincode.sh
-│   └── stop-network.sh
-│
-└── 📂 docs/
-    └── (documentation files)
-```
-
----
-
-## 🔧 Configuration
-
-### Credentials (`network/docker/.env`)
-
-```bash
-# CA Admin
-CA_ADMIN_USER=admin
-CA_ADMIN_PASSWORD=adminpw
-
-# CouchDB
-COUCHDB_USER=admin
-COUCHDB_PASSWORD=adminpw
-```
-
-> ⚠️ **Change these for production!**
-
-### Performance Tuning (`network/configtx.yaml`)
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| BatchTimeout | 200ms | Block creation interval |
-| MaxMessageCount | 50 | Transactions per block |
-| AbsoluteMaxBytes | 99MB | Max block size |
 
 ---
 
@@ -259,91 +372,21 @@ COUCHDB_PASSWORD=adminpw
 |------|-------------|
 | Owner can create | Org1 creates successfully |
 | Auditor denied create | Org2 gets access denied |
-| Regulator denied create | Org3 gets access denied |
-| Auditor can approve | Org2 approves successfully |
-| Regulator can approve | Org3 approves successfully |
 | Owner denied self-approve | Org1 cannot approve own assets |
-| Non-owner denied delete | Org2/Org3 cannot delete |
 | Private data isolation | Org3 cannot read private data |
-| State machine enforcement | Invalid transitions blocked |
-| Audit trail | All changes recorded |
 
 ### Fault Tolerance Tests (`npm run test:fault`)
 
 | Scenario | Expected |
 |----------|----------|
 | All orderers up | ✅ Transactions succeed |
-| 1 orderer down | ✅ Transactions succeed (2/3 quorum) |
+| 1 orderer down | ✅ Transactions succeed |
 | 2 orderers down | ❌ Transactions fail (expected) |
-| Orderers restart | ✅ Network recovers |
 
 ---
 
-## 🛠️ Troubleshooting
-
-### Common Issues
-
-| Issue | Solution |
-|-------|----------|
-| **Docker not running** | `sudo systemctl start docker` |
-| **Port conflicts** | `docker stop $(docker ps -aq)` |
-| **Fabric binaries not found** | Add `~/bin` to PATH |
-| **Permission denied** | `sudo chown -R $USER:$USER .` |
-| **ENDORSEMENT_POLICY_FAILURE** | Wait and retry (cold start) |
-
-### Clean Restart
-
-```bash
-./stop-all.sh
-docker volume prune -f
-docker network prune -f
-./start-all.sh
-```
-
-### View Container Logs
-
-```bash
-# Specific container
-docker logs peer0.org1.example.com
-
-# Follow logs
-docker logs -f orderer.example.com
-
-# All containers
-docker-compose -f network/docker/docker-compose.yaml logs
-```
-
----
-
-## 📊 Performance Expectations
-
-| Metric | Expected Range |
-|--------|----------------|
-| TPS (Transactions/sec) | 300-500 |
-| Latency | 300-500ms |
-| Block Time | 200ms |
-| Endorsement Time | 50-100ms |
-
-Run benchmarks with:
-```bash
-cd client
-npm run test:perf
-```
-
----
-
-## 📄 License
-
-Apache-2.0
-
----
-
-<div align="center">
-
-**Built for Production with Hyperledger Fabric v2.5**
-
-*TypeScript · Multi-Peer Architecture · Comprehensive Testing*
-
-[⬅️ Back to Main README](../README.md)
-
-</div>
+<p align="center">
+  <a href="../README.md">⬅️ Back to Main</a> •
+  <a href="../v0/">📚 v0 (Simple)</a> •
+  <a href="../v2/">⚡ Upgrade to v2</a>
+</p>

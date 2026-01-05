@@ -1,428 +1,466 @@
-<h1 align="center">🏢 Asset Approval System v2</h1>
+<h1 align="center">
+  <br>
+  ⚡ Asset Approval System v2
+  <br>
+</h1>
 
-<div align="center">
+<h4 align="center">True ABAC with <a href="https://hyperledger-fabric-ca.readthedocs.io/">Fabric CA</a> - Production-ready patterns</h4>
 
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue)
-![Fabric](https://img.shields.io/badge/Fabric-2.5-blue)
-![Containers](https://img.shields.io/badge/Containers-14-orange)
-![100% Fabric CA](https://img.shields.io/badge/Identity-100%25%20Fabric%20CA-green)
-![Status](https://img.shields.io/badge/Status-Production%20Ready-success)
+<p align="center">
+  <img src="https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Fabric-2.5-2F3134?style=for-the-badge&logo=hyperledger&logoColor=white" alt="Fabric">
+  <img src="https://img.shields.io/badge/ABAC-Certificate_Attrs-4CAF50?style=for-the-badge" alt="ABAC">
+  <img src="https://img.shields.io/badge/Fabric_CA-100%25-FF6B35?style=for-the-badge" alt="Fabric CA">
+</p>
 
-**Enterprise-grade asset lifecycle management with True ABAC on Hyperledger Fabric.**
-
-</div>
-
----
-
-## ✨ Why v2?
-
-| Best For | Key Innovation |
-|----------|----------------|
-| ✅ True ABAC (role in certificates) | No chaincode changes to add orgs |
-| ✅ 100% Fabric CA | Production-like identity management |
-| ✅ Organization-agnostic chaincode | Scalable multi-party governance |
-| ✅ Private data collections | Confidential information handling |
-| ✅ Complete audit trails | Immutable transaction history |
-
-**👉 This is the production-ready version. See [v0](../v0/) for learning or [v1](../v1/) for comparison.**
+<p align="center">
+  <a href="#-key-features">Features</a> •
+  <a href="#-getting-started">Getting Started</a> •
+  <a href="#-design-decisions">Design</a> •
+  <a href="#-how-abac-works">ABAC</a>
+</p>
 
 ---
 
-## 📋 Prerequisites
+## ✨ Key Features
 
-> ⚠️ **Requires Linux or WSL2** — Cannot run on native Windows
+<table>
+  <tr>
+    <td>🎯</td>
+    <td><b>True ABAC</b></td>
+    <td>Role read from X.509 certificate attributes, not MSP ID</td>
+  </tr>
+  <tr>
+    <td>🏛️</td>
+    <td><b>100% Fabric CA</b></td>
+    <td>All identities issued by CA (no cryptogen)</td>
+  </tr>
+  <tr>
+    <td>🔌</td>
+    <td><b>Org-Agnostic</b></td>
+    <td>No hardcoded org names in chaincode</td>
+  </tr>
+  <tr>
+    <td>➕</td>
+    <td><b>Config-Only Extension</b></td>
+    <td>Add Org4 without any code changes</td>
+  </tr>
+  <tr>
+    <td>🧪</td>
+    <td><b>32+ Tests</b></td>
+    <td>6 test suites covering all scenarios</td>
+  </tr>
+  <tr>
+    <td>🔀</td>
+    <td><b>Identity ≠ Authorization</b></td>
+    <td>Identity issued by CA, authorization enforced exclusively in chaincode</td>
+  </tr>
+</table>
 
-| Software | Version | Check Command | Install Guide |
-|----------|---------|---------------|---------------|
-| Docker | 20+ | `docker --version` | [Install Docker](https://docs.docker.com/get-docker/) |
-| Docker Compose | v2+ | `docker compose version` | Included with Docker Desktop |
-| Node.js | 18+ | `node --version` | [Install Node.js](https://nodejs.org/) |
-| Fabric Binaries | 2.5.x | `peer version` | See below |
-| Fabric CA Client | 1.5.x | `fabric-ca-client version` | See below |
-| jq | Any | `jq --version` | `sudo apt install jq` |
+---
 
-### Install Fabric Binaries
+## 📊 Version Comparison
+
+| Aspect | v0 | v1 | v2 (This) |
+|--------|:--:|:--:|:---------:|
+| **Language** | JS | TS | TS |
+| **Access Control** | OBAC | OBAC | **ABAC** ✨ |
+| **Role Source** | MSP ID | MSP ID | **Certificate** ✨ |
+| **Identity Mgmt** | cryptogen | cryptogen | **Fabric CA** ✨ |
+| **Add New Org** | Code change | Code change | **Config only** ✨ |
+
+---
+
+## 🚀 Getting Started
+
+### Step 1: Install Prerequisites
+
+> ⚠️ **Requires Linux or WSL2** - Hyperledger Fabric cannot run on native Windows.
+
+#### Install Docker
 
 ```bash
-# Download Fabric binaries to ~/bin
-mkdir -p ~/bin
-cd ~/bin
+# Update packages
+sudo apt-get update
 
-curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.5.4 1.5.7 -d -s
+# Install Docker
+sudo apt-get install -y docker.io docker-compose-plugin
 
-# Add to PATH (add to ~/.bashrc for persistence)
-export PATH=$PATH:~/bin/bin
+# Add your user to docker group (logout/login after)
+sudo usermod -aG docker $USER
+
+# Start Docker
+sudo systemctl start docker
+sudo systemctl enable docker
 ```
 
-### Verify Installation
+#### Install Node.js 18+
 
 ```bash
-# All commands should work
+# Install nvm (Node Version Manager)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+
+# Reload shell
+source ~/.bashrc
+
+# Install Node.js 18
+nvm install 18
+nvm use 18
+```
+
+#### Install jq
+
+```bash
+sudo apt-get install -y jq
+```
+
+#### Install Hyperledger Fabric Binaries
+
+```bash
+# Create directory for Fabric
+mkdir -p ~/fabric && cd ~/fabric
+
+# Download Fabric binaries (2.5.0) with CA client
+curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.5.0 1.5.5
+
+# Add to PATH (add this to ~/.bashrc for permanence)
+export PATH=$PATH:~/fabric/fabric-samples/bin
+```
+
+---
+
+### Step 2: Verify Prerequisites
+
+```bash
+# Docker (should show 20+)
+docker --version
+
+# Docker Compose (should show v2+)
+docker compose version
+
+# Node.js (should show 18+)
+node --version
+
+# Fabric peer (should show 2.5.x)
 peer version
-orderer version
+
+# Fabric CA client (required for v2!)
 fabric-ca-client version
-configtxgen --version
+
+# jq (any version)
+jq --version
 ```
+
+**Expected output:**
+```
+Docker version 24.0.x
+Docker Compose version v2.x.x
+v18.x.x
+peer:
+ Version: 2.5.0
+fabric-ca-client:
+ Version: 1.5.5
+jq-1.6
+```
+
+> ⚠️ **v2 requires `fabric-ca-client`** - This is automatically included when you download Fabric binaries.
 
 ---
 
-## ⚡ Quick Start (5 Minutes)
-
-### Step 1: Clone and Navigate
+### Step 3: Clone the Repository
 
 ```bash
-git clone https://github.com/your-org/asset-approval-system.git
+# Clone the repository
+git clone https://github.com/akash-R-A-J/asset-approval-system.git
+
+# Navigate to v2
 cd asset-approval-system/v2
 ```
 
-### Step 2: Make Scripts Executable
+---
+
+### Step 4: Make Scripts Executable
 
 ```bash
-chmod +x *.sh scripts/*.sh
+# Make all scripts executable
+chmod +x *.sh
+chmod +x scripts/*.sh
 ```
 
-### Step 3: Start Everything
+---
+
+### Step 5: Start the Network
 
 ```bash
 ./start-all.sh
 ```
 
-**What happens (3-5 minutes):**
+**What happens:**
 ```
-✓ 4 Certificate Authorities started
-✓ Orderer identities enrolled via Fabric CA
-✓ Peer identities enrolled with role attributes
-✓ Channel artifacts generated
-✓ 3 Orderers + 3 Peers + 3 CouchDB started
-✓ Channel created (asset-channel)
-✓ All peers joined channel
-✓ Chaincode compiled (TypeScript)
-✓ Chaincode installed on all peers
-✓ Chaincode approved by all orgs
-✓ Chaincode committed
+✓ Starting Fabric CAs...
+✓ Enrolling CA admins...
+✓ Registering identities with role attributes...
+✓ Enrolling user identities...
+✓ Creating orderer genesis block...
+✓ Starting orderers and peers (12 containers)...
+✓ Creating channel...
+✓ Joining peers to channel...
+✓ Deploying TypeScript chaincode...
+✓ Installing client dependencies...
+✓ Running demo...
 
-SUCCESS! Network is ready
+════════════════════════════════════════════
+  SUCCESS! Network is ready with True ABAC.
+════════════════════════════════════════════
 ```
 
-### Step 4: Run Interactive Demo
+**Estimated time:** 5-7 minutes (includes CA enrollment)
+
+---
+
+### Step 6: Run the Demo
 
 ```bash
 cd client
-npm install
 npm run demo
 ```
 
-**Demo walks you through:**
-1. Creating an asset (as Owner)
-2. Querying the asset
-3. Approving the asset (as Auditor)
-4. Approving the asset (as Regulator)
-5. Activating the approved asset
-6. Viewing audit history
-
-### Step 5: Run Tests
-
-```bash
-# Run all tests (30+ tests)
-npm test
-
-# Run specific test suites
-npm run test:abac       # ABAC access control tests
-npm run test:state      # State machine tests
-npm run test:approval   # Approval workflow tests
-npm run test:rejection  # Rejection workflow tests
-npm run test:query      # Query tests
-npm run test:security   # Security tests
-
-# List available suites
-npm run test:list
-```
-
-### Step 6: Stop When Done
-
-```bash
-cd ..
-./stop-all.sh
-```
+Demo shows:
+1. GetCallerInfo - displays role from certificate
+2. Asset creation by `role=owner`
+3. Approval by `role=auditor`
+4. Approval by `role=regulator`
+5. Activation by `role=owner`
+6. Complete audit trail
 
 ---
 
-## 🏗️ Architecture
-
-### Network Topology (14 Containers)
-
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│                    100% FABRIC CA NETWORK                             │
-├──────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
-│  │   CA-Org1   │  │   CA-Org2   │  │   CA-Org3   │  │ CA-Orderer  │ │
-│  │    :7054    │  │    :8054    │  │    :9054    │  │   :10054    │ │
-│  │ role=owner  │  │role=auditor │  │role=regulator  │             │ │
-│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘ │
-│                                                                      │
-├──────────────────────────────────────────────────────────────────────┤
-│                       ORDERING SERVICE (Raft)                         │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                  │
-│  │   orderer   │  │  orderer2   │  │  orderer3   │                  │
-│  │    :7050    │  │    :8050    │  │    :9050    │                  │
-│  └─────────────┘  └─────────────┘  └─────────────┘                  │
-│                    Tolerates 1 failure                               │
-├──────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│  ORG1 (Owner)         ORG2 (Auditor)        ORG3 (Regulator)        │
-│  ┌─────────────┐     ┌─────────────┐       ┌─────────────┐         │
-│  │ Peer  :7051 │     │ Peer  :8051 │       │ Peer  :9051 │         │
-│  │ CouchDB     │     │ CouchDB     │       │ CouchDB     │         │
-│  │    :5984    │     │    :6984    │       │    :7984    │         │
-│  └─────────────┘     └─────────────┘       └─────────────┘         │
-│                                                                      │
-│  ┌────────────────────────────────────────────────────────────────┐ │
-│  │                   CHANNEL: asset-channel                        │ │
-│  │  ┌──────────────────┐    ┌──────────────────────────────────┐  │ │
-│  │  │   PUBLIC LEDGER  │    │ PRIVATE DATA (Org1 + Org2 only)  │  │ │
-│  │  │  • assetID       │    │ • confidentialNotes              │  │ │
-│  │  │  • status        │    │ • internalValue                  │  │ │
-│  │  │  • approvals     │    │                                  │  │ │
-│  │  │  • timestamps    │    │                                  │  │ │
-│  │  └──────────────────┘    └──────────────────────────────────┘  │ │
-│  └────────────────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 🔄 Asset Lifecycle (State Machine)
-
-```
-                                ┌───────────────┐
-                                │    CREATED    │ ← Owner creates asset
-                                └───────┬───────┘
-                                        │ submitForApproval()
-                                        ▼
-                                ┌───────────────┐
-              ┌─────────────────│    PENDING    │─────────────────┐
-              │  rejectAsset()  │   APPROVAL    │  approveAsset() │
-              ▼                 └───────────────┘                 ▼
-      ┌───────────────┐                               ┌───────────────┐
-      │   REJECTED    │                               │   APPROVED    │
-      └───────┬───────┘                               └───────┬───────┘
-              │ resubmit()                                    │ activateAsset()
-              │                                               ▼
-              │                                       ┌───────────────┐
-              └──────────────► PENDING ◄──────────────│    ACTIVE     │
-                              APPROVAL                └───────┬───────┘
-                                                              │ deleteAsset()
-                                                              ▼
-                                                      ┌───────────────┐
-                                                      │    DELETED    │
-                                                      └───────────────┘
-```
-
----
-
-## 🔐 True ABAC Implementation
-
-**What makes v2 special:** Roles are embedded in X.509 certificates, NOT checked against organization MSP ID.
-
-```typescript
-// How chaincode reads the role
-const role = ctx.clientIdentity.getAttributeValue('role');
-//                                                  ↑
-//                                    Reads from certificate!
-
-// Authorization is role-based, not org-based
-if (!['owner'].includes(role)) {
-    throw new Error(`Access denied: role ${role} cannot create assets`);
-}
-```
-
-### Role Permissions Matrix
-
-| Operation | `owner` | `auditor` | `regulator` |
-|-----------|:-------:|:---------:|:-----------:|
-| CreateAsset | ✅ | ❌ | ❌ |
-| UpdateAsset | ✅ | ❌ | ❌ |
-| SubmitForApproval | ✅ | ❌ | ❌ |
-| ApproveAsset | ❌ | ✅ | ✅ |
-| RejectAsset | ❌ | ✅ | ✅ |
-| ActivateAsset | ✅ | ❌ | ❌ |
-| DeleteAsset | ✅ | ❌ | ❌ |
-| Read Private Data | ✅ | ✅ | ❌ |
-
-### Adding a New Organization
-
-**Zero chaincode changes required!**
-
-1. Start new org's Fabric CA
-2. Register users with appropriate role attribute
-3. Update channel configuration
-4. Join peer to channel
-5. **Done!**
-
----
-
-## 🖥️ CLI Commands
+### Step 7: Run Tests
 
 ```bash
 cd client
 
-# ═══════════════════════════════════════════════════
-# AS OWNER (Org1)
-# ═══════════════════════════════════════════════════
+# Run ALL 32 tests
+npm test
 
-# Create an asset
-node src/app.js invoke CreateAsset ASSET001 "Manufacturing Equipment" org1 user1
+# Or run individual test suites:
+npm run test:abac       # ABAC role verification (6 tests)
+npm run test:state      # State machine transitions (5 tests)
+npm run test:approval   # Approval workflow (5 tests)
+npm run test:rejection  # Rejection workflow (4 tests)
+npm run test:query      # Query operations (6 tests)
+npm run test:security   # Security validations (6 tests)
 
-# Submit for approval
-node src/app.js invoke SubmitForApproval ASSET001 org1 user1
+# List all available suites
+npm run test:list
 
-# Activate approved asset
-node src/app.js invoke ActivateAsset ASSET001 org1 user1
+# Show help
+npm run test:help
+```
 
-# Delete asset
-node src/app.js invoke DeleteAsset ASSET001 org1 user1
-
-# ═══════════════════════════════════════════════════
-# AS AUDITOR (Org2)
-# ═══════════════════════════════════════════════════
-
-# Approve asset
-node src/app.js invoke ApproveAsset ASSET001 org2 user1
-
-# Reject with reason
-node src/app.js invoke RejectAsset ASSET001 "Missing compliance docs" org2 user1
-
-# ═══════════════════════════════════════════════════
-# AS REGULATOR (Org3)
-# ═══════════════════════════════════════════════════
-
-# Approve asset
-node src/app.js invoke ApproveAsset ASSET001 org3 user1
-
-# ═══════════════════════════════════════════════════
-# QUERIES (Any Org)
-# ═══════════════════════════════════════════════════
-
-# Get single asset
-node src/app.js query QueryAsset ASSET001 org1 user1
-
-# List all assets
-node src/app.js query QueryAllAssets org1 user1
-
-# View audit history
-node src/app.js query GetAssetHistory ASSET001 org1 user1
-
-# Check caller identity (debug)
-node src/app.js query GetCallerInfo org1 user1
+**Expected output:**
+```
+════════════════════════════════════════════
+         TEST RESULTS SUMMARY
+════════════════════════════════════════════
+  abac:      6/6 passed ✓
+  state:     5/5 passed ✓
+  approval:  5/5 passed ✓
+  rejection: 4/4 passed ✓
+  query:     6/6 passed ✓
+  security:  6/6 passed ✓
+────────────────────────────────────────────
+  TOTAL:    32/32 passed (100%)
+════════════════════════════════════════════
 ```
 
 ---
 
-## 📁 Project Structure
+### Step 8: Stop the Network
 
-```
-v2/
-├── 📜 start-all.sh              # One-command startup
-├── 📜 stop-all.sh               # Clean shutdown
-│
-├── 📂 scripts/
-│   ├── start-network.sh         # Network bootstrapping
-│   ├── deploy-chaincode.sh      # Chaincode lifecycle
-│   ├── registerEnroll.sh        # Fabric CA enrollment (all identities)
-│   └── envVar.sh                # Environment variables
-│
-├── 📂 chaincode/asset-approval/
-│   ├── src/
-│   │   └── assetApproval.ts     # Smart contract (True ABAC)
-│   ├── collections_config.json  # Private data collections
-│   └── package.json
-│
-├── 📂 network/
-│   ├── configtx.yaml            # Channel & endorsement policies
-│   ├── core.yaml                # Peer CLI configuration
-│   └── docker/
-│       ├── docker-compose.yaml  # 14 containers
-│       └── env.example          # Environment template
-│
-└── 📂 client/
-    ├── src/
-    │   ├── fabricClient.js      # Gateway SDK wrapper
-    │   ├── demo.js              # Interactive demo
-    │   └── app.js               # CLI application
-    └── package.json
+```bash
+# From v2 directory
+./stop-all.sh
 ```
 
 ---
 
 ## 🛠️ Troubleshooting
 
+### Common Issues
+
 | Issue | Solution |
 |-------|----------|
-| `/bin/bash^M: bad interpreter` | `dos2unix *.sh scripts/*.sh` |
-| `fabric-ca-client: not found` | Add `~/bin/bin` to PATH |
-| `Port already in use` | `docker stop $(docker ps -aq)` |
-| `Permission denied` | `chmod +x *.sh scripts/*.sh` |
-| `ENDORSEMENT_POLICY_FAILURE` | Wait 10s and retry (cold start) |
-| `Cannot find module` | `cd client && npm install` |
-| `TLS handshake error` | Ensure orderer CA cert exists |
+| `docker: command not found` | Install Docker: `sudo apt-get install docker.io` |
+| `permission denied` on docker | Run `sudo usermod -aG docker $USER` and re-login |
+| `peer: command not found` | Add Fabric binaries to PATH |
+| `fabric-ca-client: command not found` | Install Fabric CA: `curl -sSL https://bit.ly/2ysbOFE \| bash -s` |
+| CA enrollment fails | Check CA container logs: `docker logs ca_org1` |
+| Port already in use | Run `docker stop $(docker ps -aq)` |
 
-### Full Reset
+### Clean Restart
 
 ```bash
+# Stop everything
 ./stop-all.sh
+
+# Remove all Docker volumes
 docker volume prune -f
+
+# Remove all Docker networks
 docker network prune -f
+
+# Remove generated files (CA certs, channel artifacts)
+rm -rf network/organizations network/channel-artifacts
+
+# Start fresh
 ./start-all.sh
+```
+
+### View Container Logs
+
+```bash
+# CA logs (check enrollment issues)
+docker logs ca_org1
+docker logs ca_org2
+docker logs ca_org3
+
+# Peer logs
+docker logs peer0.org1.example.com
+
+# Orderer logs
+docker logs orderer.example.com
+
+# Chaincode logs
+docker logs $(docker ps -q --filter name=dev-peer0.org1)
 ```
 
 ---
 
-## 🆚 v0 vs v1 vs v2 Comparison
+## 🎨 Design Decisions
 
-| Aspect | v0 | v1 | **v2** |
-|--------|----|----|--------|
-| **Purpose** | Learning | Multi-peer | **Production** |
-| **Access Control** | OBAC | OBAC | **True ABAC** |
-| **Add New Org** | Chaincode change | Chaincode change | **Config only** |
-| **Identity Management** | Fabric CA | cryptogen | **100% Fabric CA** |
-| **Language** | JavaScript | TypeScript | **TypeScript** |
-| **Containers** | 12 | 24 | **14** |
-| **Peers per Org** | 1 | 3 | **1** |
-| **Resubmit Rejected** | ❌ | ✅ | **✅** |
-| **Private Data** | ✅ | ✅ | **✅** |
+### Why 1 Peer per Org?
+Simpler topology focused on demonstrating ABAC. Production adds redundant peers.
 
----
+### Why Fabric CA (not cryptogen)?
+**cryptogen** cannot embed custom attributes. **Fabric CA** enables:
+```bash
+fabric-ca-client register --id.attrs 'role=auditor:ecert'
+```
 
-## 🔒 Production Considerations
+### Why ABAC over OBAC?
+```
+OBAC (v0, v1): getMSPID() → hardcoded map → role
+               Problem: Org4 requires code change
 
-This is **production-grade architecture** with dev defaults for convenience:
-
-| Area | v2 Status | Production Need |
-|------|-----------|-----------------|
-| TLS | Self-signed | Real CA (Let's Encrypt, etc.) |
-| Passwords | Hardcoded | HashiCorp Vault, K8s Secrets |
-| Network | localhost | Kubernetes, Docker Swarm |
-| Private Keys | On disk | HSM (Hardware Security Module) |
-| Monitoring | None | Prometheus + Grafana |
-| Logging | Docker logs | ELK Stack, Splunk |
-| Backups | None | Automated ledger snapshots |
+ABAC (v2):     getAttributeValue('role') → role
+               Benefit: Org4 = just issue cert with role attribute
+```
 
 ---
 
-## 📄 License
+## 🔑 How ABAC Works
 
-Apache-2.0
+### Certificate Attribute Flow
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│  1. FABRIC CA ENROLLMENT                                             │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  fabric-ca-client register \                                         │
+│      --id.name user1 \                                               │
+│      --id.attrs 'role=auditor:ecert'  ◄── Role embedded in cert     │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│  2. CHAINCODE READS ATTRIBUTE                                        │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  const role = ctx.clientIdentity.getAttributeValue('role');          │
+│  // Returns 'auditor' ◄── Read directly from certificate            │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│  3. AUTHORIZATION DECISION                                           │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  this.requireRole(ctx, ['auditor', 'regulator']);                    │
+│  // Allows if caller's role is in allowed list                       │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-<div align="center">
+## 🏗️ Architecture
 
-**Production-Ready Asset Approval System**
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        ORDERING SERVICE (Raft)                          │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐          │
+│  │    orderer      │  │    orderer2     │  │    orderer3     │          │
+│  │     :7050       │  │     :8050       │  │     :9050       │          │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘          │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   ┏━━━━━━━━━━━━━━━━━┓   ┏━━━━━━━━━━━━━━━━━┓   ┏━━━━━━━━━━━━━━━━━━┓     │
+│   ┃  ORG1 (Owner)   ┃   ┃  ORG2 (Auditor) ┃   ┃ ORG3 (Regulator) ┃     │
+│   ┣━━━━━━━━━━━━━━━━━┫   ┣━━━━━━━━━━━━━━━━━┫   ┣━━━━━━━━━━━━━━━━━━┫     │
+│   ┃ Peer     :7051  ┃   ┃ Peer     :9051  ┃   ┃ Peer    :11051   ┃     │
+│   ┃ CA       :7054  ┃   ┃ CA       :8054  ┃   ┃ CA       :9054   ┃     │
+│   ┃ CouchDB  :5984  ┃   ┃ CouchDB  :7984  ┃   ┃ CouchDB  :8984   ┃     │
+│   ┃ ───────────────  ┃   ┃ ───────────────  ┃   ┃ ────────────────  ┃    │
+│   ┃ role=owner      ┃   ┃ role=auditor    ┃   ┃ role=regulator   ┃    │
+│   ┗━━━━━━━━━━━━━━━━━┛   ┗━━━━━━━━━━━━━━━━━┛   ┗━━━━━━━━━━━━━━━━━━┛     │
+└─────────────────────────────────────────────────────────────────────────┘
+```
 
-*True ABAC · 100% Fabric CA · TypeScript · Scalable*
+---
 
-[⬅️ Back to Main README](../README.md) · [📚 v0 for Learning](../v0/README.md) · [🔄 Compare with v1](../v1/README.md)
+## 🔄 State Machine
 
-</div>
+```
+CREATED → PENDING_APPROVAL → APPROVED → ACTIVE → DELETED
+                          ↓
+                      REJECTED → PENDING_APPROVAL (resubmit)
+```
+
+---
+
+## 🔐 Access Control (ABAC)
+
+| Operation | owner | auditor | regulator |
+|-----------|:-----:|:-------:|:---------:|
+| CreateAsset | ✅ | ❌ | ❌ |
+| ApproveAsset | ❌ | ✅ | ✅ |
+| RejectAsset | ❌ | ✅ | ✅ |
+| ActivateAsset | ✅ | ❌ | ❌ |
+| DeleteAsset | ✅ | ❌ | ❌ |
+| ReadPrivateData | ✅ | ✅ | ❌ |
+| GetCallerInfo | ✅ | ✅ | ✅ |
+
+---
+
+## 🧪 Test Suites
+
+| Suite | Tests | Description |
+|-------|:-----:|-------------|
+| `abac` | 6 | Role verification, access control |
+| `state` | 5 | State machine transitions |
+| `approval` | 5 | Approval workflow paths |
+| `rejection` | 4 | Rejection workflow paths |
+| `query` | 6 | Query operations |
+| `security` | 6 | Security validations |
+
+---
+
+<p align="center">
+  <a href="../README.md">⬅️ Back to Main</a> •
+  <a href="../v0/">📚 v0 (Simple)</a> •
+  <a href="../v1/">🚀 v1 (Multi-Peer)</a>
+</p>

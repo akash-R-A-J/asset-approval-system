@@ -1,122 +1,319 @@
-<h1 align="center">📚 Asset Approval System v0</h1>
+<h1 align="center">
+  <br>
+  📚 Asset Approval System v0
+  <br>
+</h1>
 
-<div align="center">
+<h4 align="center">Simple implementation for learning <a href="https://www.hyperledger.org/projects/fabric">Hyperledger Fabric</a> fundamentals</h4>
 
-![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow)
-![Fabric](https://img.shields.io/badge/Fabric-2.5-blue)
-![Containers](https://img.shields.io/badge/Containers-12-orange)
-![Status](https://img.shields.io/badge/Status-Learning%20%2F%20POC-blue)
+<p align="center">
+  <img src="https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
+  <img src="https://img.shields.io/badge/Fabric-2.5-2F3134?style=for-the-badge&logo=hyperledger&logoColor=white" alt="Fabric">
+  <img src="https://img.shields.io/badge/Containers-12-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Containers">
+  <img src="https://img.shields.io/badge/Status-Learning-blue?style=for-the-badge" alt="Status">
+</p>
 
-**Simple implementation for learning Hyperledger Fabric concepts and building POC demos.**
-
-</div>
-
----
-
-## ✨ Why v0?
-
-| Best For | Not Ideal For |
-|----------|---------------|
-| ✅ Learning Fabric concepts | ❌ Production deployment |
-| ✅ POC demonstrations | ❌ High availability needs |
-| ✅ Resource-constrained environments | ❌ Multi-peer redundancy |
-| ✅ Quick prototyping | ❌ Complex state machines |
-| ✅ Understanding OBAC | ❌ Rejected asset resubmission |
-
-**👉 Start here to learn, then graduate to [v1](../v1/) for production.**
+<p align="center">
+  <a href="#-key-features">Features</a> •
+  <a href="#-getting-started">Getting Started</a> •
+  <a href="#-architecture">Architecture</a> •
+  <a href="#-state-machine">State Machine</a>
+</p>
 
 ---
 
-## ⚡ Quick Start
+## ✨ Key Features
 
-### Prerequisites
+<table>
+  <tr>
+    <td>🔐</td>
+    <td><b>OBAC</b></td>
+    <td>Organization-based access control via MSP ID verification</td>
+  </tr>
+  <tr>
+    <td>📊</td>
+    <td><b>3-State Machine</b></td>
+    <td>Simple PENDING → APPROVED/REJECTED workflow</td>
+  </tr>
+  <tr>
+    <td>🔒</td>
+    <td><b>Private Data</b></td>
+    <td>Confidential collection shared between Org1 + Org2</td>
+  </tr>
+  <tr>
+    <td>🐳</td>
+    <td><b>12 Containers</b></td>
+    <td>Minimal footprint for learning environments</td>
+  </tr>
+</table>
 
-| Software | Version | Check Command |
-|----------|---------|---------------|
-| Docker | 20+ | `docker --version` |
-| Docker Compose | v2+ | `docker compose version` |
-| Node.js | 18+ | `node --version` |
-| Fabric Binaries | 2.5.x | `peer version` |
-| jq | Any | `jq --version` |
+> 💡 v0 intentionally keeps the workflow simple to focus on Fabric fundamentals rather than governance complexity.
 
-> ⚠️ **Requires Linux or WSL2** - Cannot run on native Windows
+---
 
-### Start in 3 Commands
+## 📊 Version Comparison
+
+| Aspect | v0 (This) | v1 | v2 |
+|--------|:---------:|:--:|:--:|
+| **Best For** | Learning | Multi-Peer | Production |
+| State Machine | 3 states | 6 states | 6 states |
+| Resubmission | ❌ | ✅ | ✅ |
+| Access Control | OBAC | OBAC | ABAC |
+
+> 💡 **Start here to learn**, then graduate to [v1](../v1/) or [v2](../v2/) for production patterns.
+
+---
+
+## 🚀 Getting Started
+
+### Step 1: Install Prerequisites
+
+> ⚠️ **Requires Linux or WSL2** - Hyperledger Fabric cannot run on native Windows.
+
+#### Install Docker
 
 ```bash
-# 1. Navigate to v0
+# Update packages
+sudo apt-get update
+
+# Install Docker
+sudo apt-get install -y docker.io docker-compose-plugin
+
+# Add your user to docker group (logout/login after)
+sudo usermod -aG docker $USER
+
+# Start Docker
+sudo systemctl start docker
+sudo systemctl enable docker
+```
+
+#### Install Node.js 18+
+
+```bash
+# Install nvm (Node Version Manager)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+
+# Reload shell
+source ~/.bashrc
+
+# Install Node.js 18
+nvm install 18
+nvm use 18
+```
+
+#### Install jq
+
+```bash
+sudo apt-get install -y jq
+```
+
+#### Install Hyperledger Fabric Binaries
+
+```bash
+# Create directory for Fabric
+mkdir -p ~/fabric && cd ~/fabric
+
+# Download Fabric binaries (2.5.0)
+curl -sSL https://bit.ly/2ysbOFE | bash -s -- 2.5.0 1.5.5
+
+# Add to PATH (add this to ~/.bashrc for permanence)
+export PATH=$PATH:~/fabric/fabric-samples/bin
+```
+
+---
+
+### Step 2: Verify Prerequisites
+
+Run these commands to verify all prerequisites are installed correctly:
+
+```bash
+# Docker (should show 20+)
+docker --version
+
+# Docker Compose (should show v2+)
+docker compose version
+
+# Node.js (should show 18+)
+node --version
+
+# npm (should show 8+)
+npm --version
+
+# Fabric peer (should show 2.5.x)
+peer version
+
+# jq (should show any version)
+jq --version
+```
+
+**Expected output:**
+```
+Docker version 24.0.x
+Docker Compose version v2.x.x
+v18.x.x
+8.x.x
+peer:
+ Version: 2.5.0
+jq-1.6
+```
+
+---
+
+### Step 3: Clone the Repository
+
+```bash
+# Clone the repository
+git clone https://github.com/akash-R-A-J/asset-approval-system.git
+
+# Navigate to v0
 cd asset-approval-system/v0
+```
 
-# 2. Make scripts executable
-chmod +x scripts/*.sh network/scripts/*.sh
+---
 
-# 3. Start everything (3-5 minutes)
+### Step 4: Make Scripts Executable
+
+```bash
+# Make all scripts executable
+chmod +x scripts/*.sh
+chmod +x network/scripts/*.sh
+```
+
+---
+
+### Step 5: Start the Network
+
+```bash
 ./scripts/start-all.sh
 ```
 
 **What happens:**
 ```
-✓ Network started (12 containers)
-✓ Channel created
-✓ Chaincode deployed
-✓ Client setup complete
-✓ Chaincode warmed up
-SUCCESS! Network is ready
+✓ Cleaning up old containers...
+✓ Generating crypto materials...
+✓ Starting network (12 containers)...
+✓ Creating channel...
+✓ Joining peers to channel...
+✓ Deploying chaincode...
+✓ Installing client dependencies...
+✓ Warming up chaincode...
+
+════════════════════════════════════════════
+  SUCCESS! Network is ready.
+════════════════════════════════════════════
 ```
 
-### Run Demo & Tests
+**Estimated time:** 3-5 minutes on first run.
+
+---
+
+### Step 6: Run the Demo
 
 ```bash
-# Interactive workflow demonstration
 ./scripts/demo.sh
+```
 
-# Security tests (18 tests)
+This runs an interactive demo showing:
+1. Asset creation by Org1 (Owner)
+2. Approval by Org2 (Auditor)
+3. Approval by Org3 (Regulator)
+4. Final asset status
+
+---
+
+### Step 7: Run Tests
+
+```bash
+# Workflow tests (18 tests)
 ./scripts/run-tests.sh
 
 # Fault tolerance tests
 ./scripts/test-fault-tolerance.sh
 ```
 
-### Stop & Cleanup
+---
+
+### Step 8: Stop the Network
 
 ```bash
 ./scripts/stop-all.sh
+```
+
+This stops all containers and cleans up.
+
+---
+
+## 🛠️ Troubleshooting
+
+### Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| `docker: command not found` | Install Docker: `sudo apt-get install docker.io` |
+| `permission denied` on docker | Run `sudo usermod -aG docker $USER` and re-login |
+| `peer: command not found` | Add Fabric binaries to PATH |
+| Port already in use | Run `docker stop $(docker ps -aq)` |
+| Chaincode install fails | Clean restart (see below) |
+
+### Clean Restart
+
+If you encounter issues, do a complete cleanup:
+
+```bash
+# Stop everything
+./scripts/stop-all.sh
+
+# Remove all Docker volumes
+docker volume prune -f
+
+# Remove all Docker networks
+docker network prune -f
+
+# Remove generated files
+rm -rf network/organizations network/channel-artifacts
+
+# Start fresh
+./scripts/start-all.sh
+```
+
+### View Container Logs
+
+```bash
+# Peer logs
+docker logs peer0.org1.example.com
+
+# Orderer logs
+docker logs orderer.example.com
+
+# Follow logs in real-time
+docker logs -f peer0.org1.example.com
+
+# Chaincode logs
+docker logs $(docker ps -q --filter name=dev-peer0.org1)
 ```
 
 ---
 
 ## 🏗️ Architecture
 
-### Network Topology (12 Containers)
-
 ```
-┌────────────────────────────────────────────────────────────────────┐
-│                       ORDERING SERVICE (Raft)                       │
-│  ┌────────────┐    ┌────────────┐    ┌────────────┐               │
-│  │  orderer0  │    │  orderer1  │    │  orderer2  │               │
-│  │   :7050    │    │   :8050    │    │   :9050    │               │
-│  └────────────┘    └────────────┘    └────────────┘               │
-│                      Tolerates 1 failure                           │
-├────────────────────────────────────────────────────────────────────┤
-│                                                                    │
-│  ORG1 (Asset Owner)     ORG2 (Auditor)      ORG3 (Regulator)      │
-│  ┌───────────────┐     ┌───────────────┐   ┌───────────────┐      │
-│  │ Peer    :7051 │     │ Peer    :9051 │   │ Peer   :11051 │      │
-│  │ CA      :7054 │     │ CA      :8054 │   │ CA      :9054 │      │
-│  │ CouchDB :5984 │     │ CouchDB :7984 │   │ CouchDB :8984 │      │
-│  └───────────────┘     └───────────────┘   └───────────────┘      │
-│                                                                    │
-│  ┌──────────────────────────────────────────────────────────────┐ │
-│  │                   CHANNEL: asset-channel                      │ │
-│  │  ┌─────────────────┐   ┌────────────────────────────────┐    │ │
-│  │  │  PUBLIC LEDGER  │   │ PRIVATE DATA (Org1 + Org2)     │    │ │
-│  │  │  • assetID      │   │ • description                  │    │ │
-│  │  │  • status       │   │ • internal notes               │    │ │
-│  │  │  • approvals    │   │ • valuation amount             │    │ │
-│  │  │  • timestamps   │   │ • confidential terms           │    │ │
-│  │  └─────────────────┘   └────────────────────────────────┘    │ │
-│  └──────────────────────────────────────────────────────────────┘ │
-└────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        ORDERING SERVICE (Raft)                          │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐          │
+│  │    orderer0     │  │    orderer1     │  │    orderer2     │          │
+│  │     :7050       │  │     :8050       │  │     :9050       │          │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘          │
+│                    Tolerates 1 orderer failure                          │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│   ┏━━━━━━━━━━━━━━━━━┓  ┏━━━━━━━━━━━━━━━━━┓  ┏━━━━━━━━━━━━━━━━━━┓       │
+│   ┃   ORG1 (Owner)  ┃  ┃  ORG2 (Auditor) ┃  ┃ ORG3 (Regulator) ┃       │
+│   ┣━━━━━━━━━━━━━━━━━┫  ┣━━━━━━━━━━━━━━━━━┫  ┣━━━━━━━━━━━━━━━━━━┫       │
+│   ┃ • Peer    :7051 ┃  ┃ • Peer    :9051 ┃  ┃ • Peer    :11051 ┃       │
+│   ┃ • CA      :7054 ┃  ┃ • CA      :8054 ┃  ┃ • CA       :9054 ┃       │
+│   ┃ • CouchDB :5984 ┃  ┃ • CouchDB :7984 ┃  ┃ • CouchDB  :8984 ┃       │
+│   ┗━━━━━━━━━━━━━━━━━┛  ┗━━━━━━━━━━━━━━━━━┛  ┗━━━━━━━━━━━━━━━━━━┛       │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -124,220 +321,45 @@ SUCCESS! Network is ready
 ## 🔄 State Machine
 
 ```
-     ┌─────────────┐
-     │   CREATE    │ ← Org1 creates asset
-     └──────┬──────┘
-            │ (starts as PENDING)
-            ▼
-     ┌─────────────┐     Both Org2 + Org3    ┌─────────────┐
-     │   PENDING   │ ────── approve ───────▶│  APPROVED   │ ◀── FINAL
-     └──────┬──────┘                         └─────────────┘
-            │
-            │ Any approver rejects
-            ▼
-     ┌─────────────┐
-     │  REJECTED   │ ◀── FINAL (cannot resubmit in v0)
-     └─────────────┘
+                    ┌─────────────────┐
+                    │                 │
+                    │     PENDING     │ ◄── Asset created
+                    │                 │
+                    └────────┬────────┘
+                             │
+           ┌─────────────────┴─────────────────┐
+           │                                   │
+           ▼                                   ▼
+   ┌───────────────┐                   ┌───────────────┐
+   │               │                   │               │
+   │   APPROVED    │                   │   REJECTED    │
+   │               │                   │               │
+   └───────────────┘                   └───────────────┘
+         ▲                                    ▲
+         │                                    │
+         └──── Org2 + Org3 both approve ─────┘
+                                   or any rejects
 ```
 
-> ⚠️ **Note:** In v0, rejected assets cannot be resubmitted. See [v1](../v1/) for resubmission support.
+> ⚠️ **Limitation:** Rejected assets cannot be resubmitted in v0. See [v1](../v1/) for resubmission support.
 
 ---
 
 ## 🔐 Access Control (OBAC)
 
-Access is enforced **in chaincode** using MSP ID verification:
-
 | Operation | Org1 (Owner) | Org2 (Auditor) | Org3 (Regulator) |
 |-----------|:------------:|:--------------:|:----------------:|
 | CreateAsset | ✅ | ❌ | ❌ |
-| UpdateAssetStatus | ✅ | ❌ | ❌ |
 | ApproveAsset | ❌ | ✅ | ✅ |
 | RejectAsset | ❌ | ✅ | ✅ |
-| DeleteAsset | ✅ | ❌ | ❌ |
 | QueryAsset | ✅ | ✅ | ✅ |
-| QueryPrivateDetails | ✅ | ✅ | ❌ |
+| QueryPrivateData | ✅ | ✅ | ❌ |
+| DeleteAsset | ✅ | ❌ | ❌ |
 
 ---
 
-## 📁 Project Structure
-
-```
-v0/
-├── 📂 scripts/                        # Automation
-│   ├── start-all.sh                  # Complete startup
-│   ├── stop-all.sh                   # Clean shutdown
-│   ├── demo.sh                       # Interactive demo
-│   ├── run-tests.sh                  # Security tests
-│   └── test-fault-tolerance.sh       # Raft tests
-│
-├── 📂 chaincode/asset-approval/
-│   ├── lib/assetContract.js          # Smart contract
-│   ├── collections_config.json       # Private data config
-│   ├── index.js                      # Entry point
-│   └── package.json
-│
-├── 📂 client/
-│   ├── src/
-│   │   ├── app.js                    # CLI application
-│   │   ├── config.js                 # Configuration
-│   │   ├── gateway.js                # Network connection
-│   │   ├── invoke.js                 # Transaction functions
-│   │   ├── query.js                  # Query functions
-│   │   ├── enrollAdmin.js            # Admin enrollment
-│   │   └── registerUser.js           # User registration
-│   ├── wallet/                       # Identity wallets (generated)
-│   └── package.json
-│
-├── 📂 network/
-│   ├── configtx/configtx.yaml        # Channel configuration
-│   ├── docker/
-│   │   ├── docker-compose.yaml       # 12 containers
-│   │   └── docker-compose-ca.yaml    # Certificate authorities
-│   ├── organizations/                 # Crypto material (generated)
-│   ├── peercfg/core.yaml             # Peer configuration
-│   └── scripts/                       # Network scripts
-│       ├── network.sh
-│       ├── createChannel.sh
-│       ├── deployCC.sh
-│       ├── registerEnroll.sh
-│       └── envVar.sh
-│
-└── 📂 docs/
-    └── ARCHITECTURE.md
-```
-
----
-
-## 🖥️ CLI Commands
-
-```bash
-cd client
-
-# Create asset (Org1 only)
-node src/app.js create ASSET001 "Manufacturing Equipment" org1 admin
-
-# Query asset (all orgs)
-node src/app.js query ASSET001 org1 admin
-
-# Query private data (Org1/Org2 only)
-node src/app.js queryPrivate ASSET001 org1 admin
-
-# Approve asset (Org2/Org3)
-node src/app.js approve ASSET001 org2 admin
-
-# Reject asset (Org2/Org3)
-node src/app.js reject ASSET001 "Missing documents" org3 admin
-
-# View history
-node src/app.js history ASSET001 org1 admin
-
-# List all assets
-node src/app.js list org1 admin
-
-# Delete asset (Org1 only)
-node src/app.js delete ASSET001 org1 admin
-```
-
----
-
-## 🧪 Test Suites
-
-### Security Tests (`./scripts/run-tests.sh`)
-
-| Suite | Tests | What It Validates |
-|-------|-------|-------------------|
-| Access Control | 6 | Create/approve permissions |
-| State Machine | 3 | Finalized asset immutability |
-| Rejection Workflow | 3 | Reject and block approval |
-| Query Permissions | 3 | All orgs can read public data |
-| Private Data | 3 | Org3 cannot access private data |
-| **Total** | **18** | Full OBAC coverage |
-
-### Fault Tolerance Tests (`./scripts/test-fault-tolerance.sh`)
-
-| Scenario | Expected |
-|----------|----------|
-| All 3 orderers up | ✅ Transactions succeed |
-| 1 orderer down | ✅ Transactions succeed (2/3 quorum) |
-| 2 orderers down | ❌ Transactions fail (expected) |
-| Orderers restart | ✅ Network recovers |
-
----
-
-## ⚙️ Configuration
-
-### Environment Variables (Production)
-
-```bash
-export NODE_ENV=production
-export ORG1_ADMIN_SECRET=<secure-password>
-export ORG2_ADMIN_SECRET=<secure-password>
-export ORG3_ADMIN_SECRET=<secure-password>
-export TLS_VERIFY=true
-```
-
-### Input Validation
-
-The CLI validates all inputs:
-
-| Field | Rules |
-|-------|-------|
-| Asset ID | 1-64 chars, alphanumeric + `_-` |
-| Organization | org1, org2, or org3 |
-| User ID | Alphanumeric + `_-` |
-| Description | Max 500 chars |
-| Reason | Required, max 1000 chars |
-
----
-
-## 🛠️ Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| `/bin/bash^M: bad interpreter` | `dos2unix scripts/*.sh network/scripts/*.sh` |
-| `fabric-ca-client: not found` | Add `~/bin` to PATH |
-| Port already in use | `docker stop $(docker ps -aq)` |
-| Permission denied | `sudo chown -R $USER:$USER .` |
-| ENDORSEMENT_POLICY_FAILURE | Wait 10s and retry (cold start) |
-
-### Clean Restart
-
-```bash
-./scripts/stop-all.sh
-docker volume prune -f
-./scripts/start-all.sh
-```
-
----
-
-## 🆚 v0 vs v1 Comparison
-
-| Aspect | v0 (This) | v1 |
-|--------|-----------|-----|
-| Complexity | Simple | Production-grade |
-| Containers | 12 | 24 |
-| Peers per Org | 1 | 3 |
-| Language | JavaScript | TypeScript |
-| States | 3 | 6 |
-| Resubmit Rejected | ❌ | ✅ |
-
-**👉 Ready for production? See [v1 README](../v1/README.md)**
-
----
-
-## 📄 License
-
-Apache-2.0
-
----
-
-<div align="center">
-
-**Perfect for Learning Hyperledger Fabric**
-
-*JavaScript · Simple Architecture · Full OBAC Demo*
-
-[⬅️ Back to Main README](../README.md) · [➡️ Upgrade to v1](../v1/README.md)
-
-</div>
+<p align="center">
+  <a href="../README.md">⬅️ Back to Main</a> •
+  <a href="../v1/">➡️ Upgrade to v1</a> •
+  <a href="../v2/">⚡ Upgrade to v2</a>
+</p>
