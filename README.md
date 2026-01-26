@@ -14,10 +14,9 @@
 </p>
 
 <p align="center">
-  <a href="#-overview">Overview</a> •
-  <a href="#-versions">Versions</a> •
-  <a href="#-getting-started">Getting Started</a> •
-  <a href="#-architecture">Architecture</a>
+  <a href="#-overview">Overview</a> • 
+  <a href="#-versions">Versions</a> • 
+  <a href="#-getting-started">Getting Started</a>
 </p>
 
 ---
@@ -31,6 +30,8 @@ A blockchain-based system demonstrating **multi-party asset approval workflows**
 - **Private Data Collections** - Confidential information shared between specific orgs
 - **Immutable Audit Trail** - Complete history of all asset changes
 - **Progressive Architecture** - 3 versions showing evolution from POC to production
+
+> [Detailed Documentation](https://deepwiki.com/akash-R-A-J/asset-approval-system)
 
 ---
 
